@@ -1,0 +1,16 @@
+{
+    "name": "Minist\u00e8re de Mamie",
+    "short_name": "MM",
+    "background_color": "#fffff",
+    "display": "fullscreen",
+    "description": "Le Minist\u00e8re de Mamie est une application pour faciliter les choix familiaux concernant les seniors.",
+    "theme_color": "#E6066B",
+    "start_url": "/",
+    "icons": [
+        {
+            "src": "logo.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        }
+    ]
+}

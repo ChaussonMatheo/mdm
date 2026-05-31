@@ -1,0 +1,192 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+    font-family: 'mdmFontRounded';
+    src: url('../fonts/HelveticaRoundedLTStd-Black.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+}
+
+/* ── Login page ── */
+
+.login-wrap {
+    min-height: 520px;
+    display: flex;
+    align-items: stretch;
+    font-family: "mdmFontRounded";
+}
+
+.login-left {
+    background: #E6066B;
+    width: 10px;
+    flex-shrink: 0;
+}
+
+.login-main {
+    flex: 1;
+    padding: 48px 48px 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background: #ffffff;
+    border: 0.5px solid #e5e7eb;
+    border-left: none;
+    border-radius: 0 12px 12px 0;
+}
+
+.login-eyebrow {
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: #E6066B;
+    margin: 0 0 6px;
+    font-weight: 500;
+}
+
+.login-title {
+    /* font-family: 'Hevetica' regular;
+  */   font-size: 32px;
+    font-weight: 800;
+    margin: 0 0 36px;
+    color: #111827;
+    line-height: 1.1;
+}
+
+.login-title span {
+    color: #FAEA2F;
+    -webkit-text-stroke: 1.5px #b8a800;
+}
+
+.divider {
+    height: 0.5px;
+    background: #e5e7eb;
+    margin: 0 0 32px;
+}
+
+/* Champs */
+.field {
+    margin-bottom: 20px;
+}
+
+.field label,
+.login-main label {
+    display: block;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #6b7280;
+    margin-bottom: 6px;
+    font-weight: 500;
+    /* font-family: 'DM Mono', monospace; */
+}
+
+.login-main input[type="text"],
+.login-main input[type="password"],
+.login-main input[type="tel"] {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 10px 14px;
+    font-size: 14px;
+    /* font-family: 'DM Mono', monospace; */
+    background: #f9fafb;
+    border: 0.5px solid #d1d5db;
+    border-radius: 4px;
+    color: #111827;
+    outline: none;
+    transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.login-main input[type="text"]:focus,
+.login-main input[type="password"]:focus,
+.login-main input[type="tel"]:focus {
+    border-color: #E6066B;
+    box-shadow: 0 0 0 2px rgba(230, 6, 107, 0.12);
+}
+
+/* Remember me */
+.remember-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 28px;
+}
+
+.remember-row input[type="checkbox"] {
+    accent-color: #E6066B;
+    width: 14px;
+    height: 14px;
+}
+
+.remember-row label {
+    font-size: 12px;
+    color: #6b7280;
+    letter-spacing: 0.04em;
+    text-transform: none;
+    /* font-family: 'DM Mono', monospace; */
+}
+
+/* Actions */
+.login-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.forgot {
+    font-size: 12px;
+    color: #6b7280;
+    text-decoration: none;
+    letter-spacing: 0.04em;
+    /* font-family: 'DM Mono', monospace; */
+    border-bottom: 0.5px solid #e5e7eb;
+    padding-bottom: 1px;
+    transition: color 0.15s, border-color 0.15s;
+}
+
+.forgot:hover {
+    color: #E6066B;
+    border-color: #E6066B;
+}
+
+/* Bouton — remplace ou surcharge x-primary-button */
+.login-main button[type="submit"],
+.login-main .btn-login {
+    background: #E6066B;
+    color: #ffffff;
+    border: none;
+    padding: 11px 28px;
+    /* font-family: 'DM Mono', monospace; */
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.15s, transform 0.1s;
+    position: relative;
+}
+
+.login-main button[type="submit"]::after,
+.login-main .btn-login::after {
+    content: '';
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    background: #FAEA2F;
+    border-radius: 50%;
+    margin-left: 10px;
+    vertical-align: middle;
+    position: relative;
+    top: -1px;
+}
+
+.login-main button[type="submit"]:hover,
+.login-main .btn-login:hover {
+    background: #c40059;
+}
+
+.login-main button[type="submit"]:active,
+.login-main .btn-login:active {
+    transform: scale(0.97);
+}
