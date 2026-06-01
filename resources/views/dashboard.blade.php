@@ -1,15 +1,41 @@
 <x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            {{ __('Dashboard') }}
-        </h2>
-    </x-slot>
-
-    <div class="py-12">
+    <div class="space-y-4">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900 dark:text-gray-100">
-                    {{ __("You're logged in!") }}
+            <x-welcome-card />
+        </div>
+
+        <!-- Nouvelle session section -->
+        <div class="mb-8 p-2">
+            <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">Nouvelle session</h2>
+            <p class="text-gray-600 dark:text-gray-400 mb-6">Rejoignez ou créer une session.</p>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Créer une session -->
+                <a href="{{ route('sessions.create') }}" class="bg-[#E6066B] text-white rounded-[32px] px-8 py-6 flex items-center justify-between transition-all hover:bg-[#CC0E5F]">
+                    <div class="text-left">
+                        <h3 class="text-xl font-bold roundedfont mb-1">Créer une session</h3>
+                        <p class="text-pink-100 text-sm">Décidez du sujet & choisissez les modules</p>
+                    </div>
+                    <svg class="w-6 h-6 ml-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                    </svg>
+                </a>
+
+                <!-- Rejoindre une session -->
+                <div class="bg-[#64348B] text-white rounded-[32px] px-8 py-6 flex flex-col justify-between transition-all">
+                    <div>
+                        <h3 class="text-xl roundedfont font-bold mb-2">Rejoindre une session</h3>
+                        <p class="text-purple-100 text-sm mb-4">Entrez le code</p>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <input type="text" placeholder="FAM-123" class="bg-white text-purple-600 rounded-full px-4 py-2 text-center font-semibold placeholder-purple-300 focus:outline-none focus:ring-2 focus:ring-purple-300 w-40">
+                        <button class="bg-black hover:bg-gray-900 text-white rounded-full px-6 py-2 font-semibold flex items-center gap-2 transition-all whitespace-nowrap">
+                            Rejoindre
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                            </svg>
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>

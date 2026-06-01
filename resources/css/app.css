@@ -9,31 +9,51 @@
     font-style: normal;
 }
 
-/* ── Login page ── */
+@font-face {
+    font-family: 'mdmFont';
+    src: url('../fonts/Helvetica.ttc') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+}
 
-.login-wrap {
-    min-height: 520px;
-    display: flex;
-    align-items: stretch;
+/* ── Login page (mobile-first) ── */
+* {
+    font-family: "mdmFont";
+}
+.roundedfont {
     font-family: "mdmFontRounded";
+}
+.login-wrap {
+    /* Mobile: stacked layout */
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: center;
+    padding: 24px;
+    box-sizing: border-box;
+    font-family: "mdmFontRounded", sans-serif;
 }
 
 .login-left {
+    /* Mobile: thin top accent bar */
     background: #E6066B;
-    width: 10px;
+    width: 100%;
+    height: 6px;
     flex-shrink: 0;
+    border-radius: 6px;
 }
 
 .login-main {
     flex: 1;
-    padding: 48px 48px 40px;
+    margin-top: 16px;
+    padding: 24px;
     display: flex;
     flex-direction: column;
     justify-content: center;
     background: #ffffff;
     border: 0.5px solid #e5e7eb;
-    border-left: none;
-    border-radius: 0 12px 12px 0;
+    border-radius: 12px;
+    box-shadow: 0 1px 2px rgba(16,24,40,0.03);
 }
 
 .login-eyebrow {
@@ -46,23 +66,22 @@
 }
 
 .login-title {
-    /* font-family: 'Hevetica' regular;
-  */   font-size: 32px;
+    /* Mobile: slightly smaller heading */
+    font-size: 24px;
     font-weight: 800;
-    margin: 0 0 36px;
+    margin: 0 0 20px;
     color: #111827;
     line-height: 1.1;
 }
 
 .login-title span {
     color: #FAEA2F;
-    -webkit-text-stroke: 1.5px #b8a800;
 }
 
 .divider {
     height: 0.5px;
     background: #e5e7eb;
-    margin: 0 0 32px;
+    margin: 0 0 20px;
 }
 
 /* Champs */
@@ -89,7 +108,6 @@
     box-sizing: border-box;
     padding: 10px 14px;
     font-size: 14px;
-    /* font-family: 'DM Mono', monospace; */
     background: #f9fafb;
     border: 0.5px solid #d1d5db;
     border-radius: 4px;
@@ -110,7 +128,7 @@
     display: flex;
     align-items: center;
     gap: 8px;
-    margin-bottom: 28px;
+    margin-bottom: 20px;
 }
 
 .remember-row input[type="checkbox"] {
@@ -132,6 +150,8 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+    flex-direction: column;
+    gap: 12px;
 }
 
 .forgot {
@@ -139,7 +159,6 @@
     color: #6b7280;
     text-decoration: none;
     letter-spacing: 0.04em;
-    /* font-family: 'DM Mono', monospace; */
     border-bottom: 0.5px solid #e5e7eb;
     padding-bottom: 1px;
     transition: color 0.15s, border-color 0.15s;
@@ -157,7 +176,6 @@
     color: #ffffff;
     border: none;
     padding: 11px 28px;
-    /* font-family: 'DM Mono', monospace; */
     font-size: 13px;
     font-weight: 500;
     letter-spacing: 0.08em;
@@ -165,21 +183,11 @@
     cursor: pointer;
     transition: background 0.15s, transform 0.1s;
     position: relative;
+    width: 100%; /* Mobile: full width */
+    display: inline-flex;
+    justify-content: center;
 }
 
-.login-main button[type="submit"]::after,
-.login-main .btn-login::after {
-    content: '';
-    display: inline-block;
-    width: 6px;
-    height: 6px;
-    background: #FAEA2F;
-    border-radius: 50%;
-    margin-left: 10px;
-    vertical-align: middle;
-    position: relative;
-    top: -1px;
-}
 
 .login-main button[type="submit"]:hover,
 .login-main .btn-login:hover {
@@ -190,3 +198,50 @@
 .login-main .btn-login:active {
     transform: scale(0.97);
 }
+
+/* Desktop / larger screens */
+@media (min-width: 768px) {
+    .login-wrap {
+        min-height: 520px;
+        flex-direction: row;
+        padding: 0;
+    }
+
+    .login-left {
+        width: 10px;
+        height: auto;
+        border-radius: 0;
+    }
+
+    .login-main {
+        margin-top: 0;
+        padding: 48px 48px 40px;
+        border-left: none;
+        border-radius: 0 12px 12px 0;
+    }
+
+    .login-title {
+        font-size: 32px;
+        margin-bottom: 36px;
+    }
+
+    .divider {
+        margin-bottom: 32px;
+    }
+
+    .remember-row {
+        margin-bottom: 28px;
+    }
+
+    .login-actions {
+        flex-direction: row;
+        gap: 0;
+    }
+
+    .login-main button[type="submit"],
+    .login-main .btn-login {
+        width: auto;
+        padding: 11px 28px;
+    }
+}
+

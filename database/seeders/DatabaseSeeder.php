@@ -24,5 +24,9 @@ class DatabaseSeeder extends Seeder
             'name' => 'Matheo Chausson',
             'password' => bcrypt('mdm'),
         ]);
+
+        $this->call([
+            ModuleSeeder::class,
+        ]);
     }
 }

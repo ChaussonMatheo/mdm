@@ -15,20 +15,30 @@
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
     <body class="font-sans antialiased">
-        <div class="min-h-screen bg-gray-100 dark:bg-gray-900">
-            @include('layouts.navigation')
-
-            <!-- Page Heading -->
-            @isset($header)
-                <header class="bg-white dark:bg-gray-800 shadow">
-                    <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-                        {{ $header }}
+        <div class="min-h-screen bg-white dark:bg-gray-950">
+            @empty($header)
+            <!-- Header -->
+            <header class="bg-white dark:bg-gray-900 pt-14 mx-4">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div class="flex items-center justify-between h-16">
+                        <!-- Header Left (Logo or Custom Content) -->
+                        <div class="flex-shrink-0">
+                            {{ $headerLeft ?? '' }}
+                            @empty($headerLeft)
+                                <img src="{{ asset('logo/LOGO-10.png') }}" alt="{{ config('app.name') }}" class="h-20 w-auto">
+                            @endempty
+                        </div>
+                        <!-- Settings Icon -->
+                        <button class="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
+                            <i data-lucide="settings" class="w-8 h-8"></i>
+                        </button>
                     </div>
-                </header>
-            @endisset
+                </div>
+            </header>
+            @endempty
 
             <!-- Page Content -->
-            <main>
+            <main class="max-w-7xl mx-auto px-8 sm:px-6 lg:px-8">
                 {{ $slot }}
             </main>
         </div>
