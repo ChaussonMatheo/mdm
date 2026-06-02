@@ -161,20 +161,13 @@
             const secondaryColor = document.querySelector('input[name="avatar_colors[secondary]"]:checked').value;
             const accentColor = document.querySelector('input[name="avatar_colors[accent]"]:checked').value;
 
-            // Update SVG styles
-            const svg = document.getElementById('avatar-svg');
+            // Update SVG CSS variables
+            const svg = document.querySelector('#avatarPreview svg');
             if (svg) {
-                const styles = svg.querySelector('style');
-                if (styles) {
-                    styles.textContent = `.cls-1 { fill: #010202; }
-                        .cls-2 { fill: ${skinColor}; }
-                        .cls-3 { fill: #fff; }
-                        .cls-4 { fill: #070303; }
-                        .cls-5 { fill: ${skinColor}; }
-                        .cls-6 { fill: ${secondaryColor}; }
-                        .cls-7 { fill: ${accentColor}; }
-                        .cls-8 { fill: ${hairColor}; }`;
-                }
+                svg.style.setProperty('--skin', skinColor);
+                svg.style.setProperty('--hair', hairColor);
+                svg.style.setProperty('--secondary', secondaryColor);
+                svg.style.setProperty('--accent', accentColor);
             }
         }
     </script>

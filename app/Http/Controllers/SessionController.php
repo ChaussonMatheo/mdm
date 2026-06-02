@@ -105,14 +105,4 @@ class SessionController extends Controller
 
         return view('sessions.show', compact('session'));
     }
-
-    /**
-     * Show the session for editing.
-     */
-    public function edit(Session $session)
-    {
-        $this->authorize('update', $session);
-
-        return view('sessions.edit', compact('session'));
-    }
 }

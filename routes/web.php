@@ -26,7 +26,6 @@ Route::middleware('auth')->group(function () {
     Route::post('/sessions/join', [SessionController::class, 'join'])->name('sessions.join');
     Route::post('/sessions', [SessionController::class, 'store'])->name('sessions.store');
     Route::get('/sessions/{session}', [SessionController::class, 'show'])->name('sessions.show');
-    Route::get('/sessions/{session}/edit', [SessionController::class, 'edit'])->name('sessions.edit');
 });
 
 require __DIR__.'/auth.php';

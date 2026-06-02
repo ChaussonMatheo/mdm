@@ -21,8 +21,8 @@
             @foreach($session->participants as $participant)
                 <div id="participant-{{ $participant->id }}" class="flex items-center justify-between bg-white border border-[#ebecef] rounded-[16px] p-4 transition-all hover:shadow-sm">
                     <div class="flex items-center gap-4">
-                        <div class="w-10 h-10 flex items-center justify-center overflow-hidden">
-                            <x-avatar-frame :colors="$participant->avatar_colors" size="w-12 h-12" />
+                        <div class="w-14 h-14 flex items-center justify-center overflow-hidden">
+                            <x-avatar-frame :colors="$participant->avatar_colors" size="w-16 h-16" />
                         </div>
                         <span class="text-[15px] font-bold text-black">{{ $participant->id === auth()->id() ? 'Vous' : $participant->name }}</span>
                     </div>
@@ -34,7 +34,7 @@
                 @php $remaining = 4 - $session->participants->count(); @endphp
                 @for($i = 0; $i < max(0, $remaining); $i++)
                     <div class="flex items-center gap-4 border border-dashed border-[#ebecef] rounded-[16px] p-4 opacity-50">
-                        <div class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center">
+                        <div class="w-14 h-14 rounded-full bg-gray-100 flex items-center justify-center">
                             <svg class="w-6 h-6 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
                             </svg>
@@ -47,13 +47,13 @@
 
         <!-- Hidden template for JS to use -->
         <template id="avatar-template">
-            <x-avatar-frame :colors="['skin' => 'SKIN_COLOR', 'secondary' => 'SECONDARY_COLOR', 'accent' => 'ACCENT_COLOR', 'hair' => 'HAIR_COLOR']" size="w-20 h-20" />
+            <x-avatar-frame :colors="['skin' => 'SKIN_COLOR', 'secondary' => 'SECONDARY_COLOR', 'accent' => 'ACCENT_COLOR', 'hair' => 'HAIR_COLOR']" size="w-16 h-16" />
         </template>
 
         <!-- Action Button -->
         @if($session->user_id === auth()->id())
             <div class="mt-8">
-                <form action="{{ route('sessions.edit', $session) }}" method="GET">
+                <form action="{{ route('sessions.show', $session) }}" method="GET">
                     <button
                         type="submit"
                         class="w-full bg-black hover:bg-gray-900 text-white py-[15px] rounded-[31px] transition-colors flex items-center justify-center gap-2 group"
@@ -122,14 +122,14 @@
                     const colors = participant.avatar_colors || {};
 
                     avatarHtml = avatarHtml
-                        .replace('SKIN_COLOR', colors.skin || '#f5a57f')
-                        .replace('SECONDARY_COLOR', colors.secondary || '#faea2f')
-                        .replace('ACCENT_COLOR', colors.accent || '#f2969f')
-                        .replace('HAIR_COLOR', colors.hair || '#2d2d2d');
+                        .replaceAll('SKIN_COLOR', colors.skin || '#f5a57f')
+                        .replaceAll('SECONDARY_COLOR', colors.secondary || '#faea2f')
+                        .replaceAll('ACCENT_COLOR', colors.accent || '#f2969f')
+                        .replaceAll('HAIR_COLOR', colors.hair || '#2d2d2d');
 
                     newParticipant.innerHTML = `
                         <div class="flex items-center gap-4">
-                            <div class="w-10 h-10 flex items-center justify-center overflow-hidden">
+                            <div class="w-14 h-14 flex items-center justify-center overflow-hidden">
                                 ${avatarHtml}
                             </div>
                             <span class="text-[15px] font-bold text-black">${name}</span>
@@ -160,7 +160,7 @@
                                 const placeholder = document.createElement('div');
                                 placeholder.className = 'flex items-center gap-4 border border-dashed border-[#ebecef] rounded-[16px] p-4 opacity-50';
                                 placeholder.innerHTML = `
-                                    <div class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center">
+                                    <div class="w-14 h-14 rounded-full bg-gray-100 flex items-center justify-center">
                                         <svg class="w-6 h-6 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
                                         </svg>
