@@ -36,7 +36,7 @@ class SessionPolicy
      */
     public function update(User $user, Session $session): bool
     {
-        return true;
+        return $user->id === $session->user_id;
     }
 
     /**
@@ -44,7 +44,7 @@ class SessionPolicy
      */
     public function delete(User $user, Session $session): bool
     {
-        return true;
+        return $user->id === $session->user_id;
     }
 
     /**

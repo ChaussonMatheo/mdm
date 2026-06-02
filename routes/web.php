@@ -26,6 +26,12 @@ Route::middleware('auth')->group(function () {
     Route::post('/sessions/join', [SessionController::class, 'join'])->name('sessions.join');
     Route::post('/sessions', [SessionController::class, 'store'])->name('sessions.store');
     Route::get('/sessions/{session}', [SessionController::class, 'show'])->name('sessions.show');
+
+    // Game Flow Routes
+    Route::post('/sessions/{session}/start', [SessionController::class, 'start'])->name('sessions.start');
+    Route::post('/sessions/{session}/answer', [SessionController::class, 'answer'])->name('sessions.answer');
+    Route::post('/sessions/{session}/results', [SessionController::class, 'showResults'])->name('sessions.results');
+    Route::post('/sessions/{session}/next', [SessionController::class, 'next'])->name('sessions.next');
 });
 
 require __DIR__.'/auth.php';

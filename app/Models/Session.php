@@ -10,7 +10,7 @@ class Session extends Model
 {
     protected $table = 'game_sessions';
 
-    protected $fillable = ['user_id', 'theme', 'code', 'status'];
+    protected $fillable = ['user_id', 'theme', 'code', 'status', 'current_module_id', 'is_showing_results'];
 
     /**
      * Get the user that created the session.
@@ -18,6 +18,14 @@ class Session extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    /**
+     * Get the current module being played.
+     */
+    public function currentModule(): BelongsTo
+    {
+        return $this->belongsTo(Module::class, 'current_module_id');
     }
 
     /**
@@ -34,6 +42,30 @@ class Session extends Model
     public function participants(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'game_session_participants', 'game_session_id', 'user_id')->withTimestamps();
+    }
+
+    /**
+     * Get the answers for the session.
+     */
+    public function answers()
+    {
+        return $this->hasMany(GameSessionAnswer::class, 'game_session_id');
+    }
+
+    /**
+     * Check if the game has started.
+     */
+    public function hasStarted(): bool
+    {
+        return $this->status === 'active';
+    }
+
+    /**
+     * Check if the game is finished.
+     */
+    public function isFinished(): bool
+    {
+        return $this->status === 'closed';
     }
 
     /**
