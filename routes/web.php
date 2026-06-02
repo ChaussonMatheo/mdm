@@ -23,7 +23,9 @@ Route::middleware('auth')->group(function () {
     // Session routes
     Route::get('/sessions/create', [SessionController::class, 'create'])->name('sessions.create');
     Route::get('/sessions/choose-modules', [SessionController::class, 'chooseModules'])->name('sessions.choose-modules');
+    Route::post('/sessions/join', [SessionController::class, 'join'])->name('sessions.join');
     Route::post('/sessions', [SessionController::class, 'store'])->name('sessions.store');
+    Route::get('/sessions/{session}', [SessionController::class, 'show'])->name('sessions.show');
     Route::get('/sessions/{session}/edit', [SessionController::class, 'edit'])->name('sessions.edit');
 });
 

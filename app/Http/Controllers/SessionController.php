@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\ParticipantJoined;
 use App\Models\ModuleCategory;
 use App\Models\Session;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
@@ -56,7 +57,53 @@ class SessionController extends Controller
 
         $session->modules()->attach($validated['modules']);
 
-        return redirect()->route('sessions.edit', $session)->with('message', 'Session created successfully.');
+        // The creator is the first participant
+        $session->participants()->attach(auth()->id());
+
+        return redirect()->route('sessions.show', $session)->with('message', 'Session created successfully.');
+    }
+
+    /**
+     * Join an existing session.
+     */
+    public function join(Request $request)
+    {
+        $request->validate([
+            'code' => 'required|string',
+        ]);
+
+        $session = Session::where('code', $request->code)
+            ->where('status', '!=', 'closed')
+            ->first();
+
+        if (!$session) {
+            return back()->withErrors(['code' => 'Session non trouvée ou fermée.']);
+        }
+
+        // Add user as participant if not already in
+        if (!$session->participants()->where('user_id', auth()->id())->exists()) {
+            $session->participants()->attach(auth()->id());
+
+            \Illuminate\Support\Facades\Log::info('Broadcasting ParticipantJoined', [
+                'session_id' => $session->id,
+                'user_id' => auth()->id()
+            ]);
+
+            // Dispatch real-time event
+            broadcast(new ParticipantJoined($session, auth()->user()));
+        }
+
+        return redirect()->route('sessions.show', $session);
+    }
+
+    /**
+     * Display the session lobby/waiting room.
+     */
+    public function show(Session $session)
+    {
+        $session->load('participants', 'modules.category');
+
+        return view('sessions.show', compact('session'));
     }
 
     /**

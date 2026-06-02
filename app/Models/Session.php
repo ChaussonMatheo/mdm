@@ -29,6 +29,14 @@ class Session extends Model
     }
 
     /**
+     * Get the participants for the session.
+     */
+    public function participants(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'game_session_participants', 'game_session_id', 'user_id')->withTimestamps();
+    }
+
+    /**
      * Generate a unique session code.
      */
     public static function generateCode(): string

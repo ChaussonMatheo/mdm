@@ -27,15 +27,21 @@
                         <h3 class="text-xl roundedfont font-bold mb-2">Rejoindre une session</h3>
                         <p class="text-purple-100 text-sm mb-4">Entrez le code</p>
                     </div>
-                    <div class="flex items-center gap-3">
-                        <input type="text" placeholder="FAM-123" class="bg-white text-purple-600 rounded-full px-4 py-2 text-center font-semibold placeholder-purple-300 focus:outline-none focus:ring-2 focus:ring-purple-300 w-40">
-                        <button class="bg-black hover:bg-gray-900 text-white rounded-full px-6 py-2 font-semibold flex items-center gap-2 transition-all whitespace-nowrap">
-                            Rejoindre
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                            </svg>
-                        </button>
-                    </div>
+                    <form action="{{ route('sessions.join') }}" method="POST" class="flex flex-col gap-2">
+                        @csrf
+                        <div class="flex items-center gap-3">
+                            <input type="text" name="code" placeholder="FAM-123" class="bg-white text-purple-600 rounded-full px-4 py-2 text-center font-semibold placeholder-purple-300 focus:outline-none focus:ring-2 focus:ring-purple-300 w-full sm:w-40" required>
+                            <button type="submit" class="bg-black hover:bg-gray-900 text-white rounded-full px-6 py-2 font-semibold flex items-center gap-2 transition-all whitespace-nowrap">
+                                Rejoindre
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                                </svg>
+                            </button>
+                        </div>
+                        @error('code')
+                            <p class="text-red-200 text-xs mt-1">{{ $message }}</p>
+                        @enderror
+                    </form>
                 </div>
             </div>
         </div>

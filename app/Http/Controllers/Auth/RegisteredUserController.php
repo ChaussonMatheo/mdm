@@ -37,16 +37,16 @@ class RegisteredUserController extends Controller
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
             'family_code' => ['nullable', 'string', 'max:20'],
         ]);
-
-        // Get or create family
-        $family = $this->getOrCreateFamily($request->family_code);
-
         $user = User::create([
             'name' => $request->name,
             'phone' => $request->phone,
             'password' => Hash::make($request->password),
-            'family_id' => $family->id,
         ]);
+        // Get or create family
+        $family = $this->getOrCreateFamily($user, $request->family_code);
+
+        $user->family_id = $family->id;
+        $user->save();
 
         event(new Registered($user));
 
@@ -58,12 +58,13 @@ class RegisteredUserController extends Controller
     /**
      * Get existing family by code or create a new one.
      */
-    private function getOrCreateFamily(?string $familyCode): Family
+    private function getOrCreateFamily(User $user, ?string $familyCode): Family
     {
         if (empty($familyCode)) {
             // Create a new family with a generated code
             return Family::create([
-                'code' => $this->generateFamilyCode(),
+                'name' => $user->name.'\'s Family',
+                'unique_code' => $this->generateFamilyCode(),
             ]);
         }
 
@@ -90,7 +91,7 @@ class RegisteredUserController extends Controller
             for ($i = 0; $i < 8; $i++) {
                 $code .= $characters[random_int(0, strlen($characters) - 1)];
             }
-        } while (Family::where('code', $code)->exists());
+        } while (Family::where('unique_code', $code)->exists());
 
         return $code;
     }

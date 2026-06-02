@@ -1,56 +1,69 @@
 <x-app-layout>
-    <x-slot name="header">
-        <p>pas de header</p>
-    </x-slot>
-    <div class="max-w-2xl mx-auto px-4 py-8">
-        <div class="mb-12 flex justify-center">
-            <img src="{{ asset('logo/LOGO_MM.svg') }}" alt="MM Logo" class="w-20 h-auto">
+    <div class="max-w-[393px] mx-auto px-6 py-8 min-h-screen flex flex-col bg-white">
+        <!-- Header -->
+        <div class="mt-8 mb-12 flex items-center justify-between">
+            <a href="{{ route('sessions.create') }}" class="p-2">
+                <svg class="w-6 h-6 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                </svg>
+            </a>
+            <img src="{{ asset('logo/LOGO_MM.svg') }}" alt="MM Logo" class="w-[50px] h-auto">
+            <div class="w-10"></div> <!-- Spacer -->
         </div>
+
         <!-- Title and Description -->
-        <div class="mb-8">
-            <h1 class="text-3xl font-black text-gray-900 dark:text-white mb-3">Mes modules</h1>
-            <p class="text-gray-600 dark:text-gray-400 text-sm leading-relaxed">
-                Choisissez vos familles de modules préconisés : au moins 1 par famille
+        <div class="mb-10 space-y-4">
+            <h1 class="text-[20px] leading-tight text-black roundedfont uppercase">MES MODULES</h1>
+            <p class="text-[15px] leading-relaxed text-black">
+                Choisissez vos familles de modules préconisés : 
+                <span class="text-[#E6066B]">au moins 1 par famille</span>
             </p>
         </div>
 
-        <form action="{{ route('sessions.store') }}" method="POST" id="modulesForm" class="space-y-4">
+        <form action="{{ route('sessions.store') }}" method="POST" id="modulesForm" class="flex-grow flex flex-col gap-6">
             @csrf
             <input type="hidden" name="theme" value="{{ $theme }}">
 
             <!-- Categories as expandable cards -->
-            <div class="space-y-3">
+            <div class="space-y-4">
                 @foreach($categories as $category)
-                    <div class="category-item">
-                        <!-- Category Header (clickable) -->
+                    <div class="category-item flex flex-col" x-data="{ open: false }">
+                        <!-- Category Header -->
                         <button
                             type="button"
-                            onclick="toggleCategory({{ $category->id }})"
-                            class="w-full text-white rounded-2xl px-6 py-4 flex items-center justify-between transition-all hover:shadow-lg"
+                            @click="open = !open"
+                            class="w-full text-white rounded-[31px] px-8 py-6 flex items-center justify-between transition-all"
+                            :class="open ? 'rounded-b-none' : ''"
                             style="background-color: {{ $category->color }};"
                         >
                             <div class="text-left">
-                                <h3 class="text-lg font-bold">{{ $category->name }}</h3>
-                                <p class="text-sm opacity-90">{{ $category->modules->count() }} Modules</p>
+                                <h3 class="text-[20px] roundedfont uppercase leading-tight">{{ $category->name }}</h3>
+                                <p class="text-[15px] opacity-90 italic">{{ $category->modules->count() }} Modules</p>
                             </div>
-                            <span class="text-2xl chevron-icon">›</span>
+                            <svg class="w-6 h-6 transition-transform" :class="open ? 'rotate-90' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                            </svg>
                         </button>
 
-                        <!-- Modules list (hidden by default) -->
-                        <div id="category-{{ $category->id }}" class="hidden bg-gray-100 dark:bg-gray-800 rounded-b-2xl p-4 space-y-2 border-t-2" style="border-color: {{ $category->color }};">
-                            <div class="space-y-3">
+                        <!-- Modules list -->
+                        <div x-show="open" 
+                             x-collapse
+                             class="bg-gray-50 border-x border-b rounded-b-[31px] p-6 space-y-4"
+                             style="border-color: {{ $category->color }};">
+                            <div class="space-y-4">
                                 @foreach($category->modules as $module)
-                                    <label class="flex items-center p-3 bg-white dark:bg-gray-700 rounded-lg cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors">
-                                        <input
-                                            type="checkbox"
-                                            name="modules[]"
-                                            value="{{ $module->id }}"
-                                            class="w-5 h-5 rounded focus:ring-2"
-                                            style="accent-color: {{ $module->color }};"
-                                            data-category="{{ $category->id }}"
-                                        >
-                                        <div class="ml-3">
-                                            <div class="font-semibold text-gray-900 dark:text-white">{{ $module->name }}</div>
+                                    <label class="flex items-center gap-4 cursor-pointer group">
+                                        <div class="relative">
+                                            <input
+                                                type="checkbox"
+                                                name="modules[]"
+                                                value="{{ $module->id }}"
+                                                class="w-6 h-6 rounded-md border-gray-300 text-black focus:ring-black"
+                                                style="accent-color: black;"
+                                            >
+                                        </div>
+                                        <div class="flex-grow">
+                                            <div class="text-[15px] font-bold text-gray-800 group-hover:text-black transition-colors">{{ $module->name }}</div>
                                         </div>
                                     </label>
                                 @endforeach
@@ -65,42 +78,18 @@
             @enderror
 
             <!-- Submit Button -->
-            <div class="flex justify-center pt-8">
+            <div class="mt-auto pt-8">
                 <button
                     type="submit"
-                    class="w-full bg-black hover:bg-gray-900 text-white font-bold py-4 rounded-full transition-colors flex items-center justify-center gap-2"
+                    class="w-full bg-black hover:bg-gray-900 text-white py-[15px] rounded-[31px] transition-colors flex items-center justify-center gap-2 group"
                 >
-                    Continuer
-                    <span class="text-lg">›</span>
+                    <span class="text-[20px] roundedfont">Continuer</span>
+                    <svg class="w-[12.5px] h-[25px]" viewBox="0 0 13 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M2.5 4.5L10.5 12.5L2.5 20.5" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
                 </button>
             </div>
         </form>
     </div>
-
-    <script>
-        function toggleCategory(categoryId) {
-            const element = document.getElementById(`category-${categoryId}`);
-            const button = event.currentTarget;
-
-            element.classList.toggle('hidden');
-
-            // Rotate chevron
-            const chevron = button.querySelector('.chevron-icon');
-            if (element.classList.contains('hidden')) {
-                chevron.style.transform = 'rotate(0deg)';
-            } else {
-                chevron.style.transform = 'rotate(90deg)';
-            }
-        }
-
-        // Listener pour garder track des catégories validées
-        document.getElementById('modulesForm').addEventListener('submit', function(e) {
-            const checked = document.querySelectorAll('input[name="modules[]"]:checked');
-            if (checked.length === 0) {
-                e.preventDefault();
-                alert('Veuillez sélectionner au moins un module par catégorie');
-            }
-        });
-    </script>
 </x-app-layout>
 
