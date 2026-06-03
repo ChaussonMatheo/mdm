@@ -42,5 +42,6 @@
                 {{ $slot }}
             </main>
         </div>
+         @RegisterServiceWorkerScript
     </body>
 </html>
