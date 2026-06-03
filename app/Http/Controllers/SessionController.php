@@ -93,7 +93,12 @@ class SessionController extends Controller
             ]);
 
             // Dispatch real-time event
-            broadcast(new ParticipantJoined($session, auth()->user()));
+            try {
+                broadcast(new ParticipantJoined($session, auth()->user()));
+            } catch (\Illuminate\Broadcasting\BroadcastException $e) {
+                \Log::error('Broadcast failed: ' . $e->getMessage());
+                // l'app continue sans planter
+            }
         }
 
         return redirect()->route('sessions.show', $session);
@@ -148,9 +153,13 @@ class SessionController extends Controller
             'current_module_id' => $firstModule->id,
             'is_showing_results' => false,
         ]);
-
-        broadcast(new GameUpdated($session));
-
+        try {
+            broadcast(new GameUpdated($session));
+        } catch (\Illuminate\Broadcasting\BroadcastException $e) {
+            \Log::error('Broadcast failed: ' . $e->getMessage());
+            // l'app continue sans planter
+        }
+        
         return back();
     }
 
