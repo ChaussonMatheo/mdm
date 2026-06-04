@@ -13,7 +13,7 @@
                 </div>
             @endif
 
-            <form action="{{ route('avatar.update') }}" method="POST" class="space-y-8">
+            <form action="{{ route('avatar.update') }}" method="POST" class="space-y-8" id="avatarForm">
                 @csrf
                 @method('PATCH')
 
@@ -34,11 +34,11 @@
                         <div class="grid grid-cols-4 sm:grid-cols-6 gap-2">
                             @foreach($faces as $key => $svgContent)
                                 @php $num = str_replace('Perso-', '', $key); @endphp
-                                <label for="face-{{ $key }}" class="cursor-pointer" data-svg-category="face" data-svg-key="{{ $key }}" data-svg-content="{{ htmlspecialchars($svgContent) }}">
+                                <label for="face-{{ $key }}" class="cursor-pointer" data-svg-category="face" data-svg-key="{{ $key }}">
                                     <input type="radio" name="avatar_style[face]" value="{{ $key }}" id="face-{{ $key }}"
                                         {{ ($avatarStyle['face'] ?? 'Perso-18') === $key ? 'checked' : '' }}
                                         class="sr-only peer"
-                                        onchange="rebuildPreview()"
+                                        onchange="submitAvatarForm()"
                                     >
                                     <div class="p-1 rounded-xl border-2 border-transparent peer-checked:border-pink-500 peer-checked:bg-pink-50 transition-all hover:bg-gray-50">
                                         <div style="--skin: {{ $avatarColors['skin'] ?? '#f5a57f' }}; --secondary: {{ $avatarColors['secondary'] ?? '#faea2f' }}; --accent: {{ $avatarColors['accent'] ?? '#f2969f' }}; --hair: {{ $avatarColors['hair'] ?? '#2d2d2d' }};">
@@ -57,11 +57,11 @@
                         <div class="grid grid-cols-4 sm:grid-cols-6 gap-2">
                             @foreach($features as $key => $svgContent)
                                 @php $num = str_replace('Perso-', '', $key); @endphp
-                                <label for="feat-{{ $key }}" class="cursor-pointer" data-svg-category="features" data-svg-key="{{ $key }}" data-svg-content="{{ htmlspecialchars($svgContent) }}">
+                                <label for="feat-{{ $key }}" class="cursor-pointer" data-svg-category="features" data-svg-key="{{ $key }}">
                                     <input type="radio" name="avatar_style[features]" value="{{ $key }}" id="feat-{{ $key }}"
                                         {{ ($avatarStyle['features'] ?? 'Perso-23') === $key ? 'checked' : '' }}
                                         class="sr-only peer"
-                                        onchange="rebuildPreview()"
+                                        onchange="submitAvatarForm()"
                                     >
                                     <div class="p-1 rounded-xl border-2 border-transparent peer-checked:border-pink-500 peer-checked:bg-pink-50 transition-all hover:bg-gray-50">
                                         <div style="--skin: {{ $avatarColors['skin'] ?? '#f5a57f' }}; --secondary: {{ $avatarColors['secondary'] ?? '#faea2f' }}; --accent: {{ $avatarColors['accent'] ?? '#f2969f' }}; --hair: {{ $avatarColors['hair'] ?? '#2d2d2d' }};">
@@ -80,11 +80,11 @@
                         <div class="grid grid-cols-4 sm:grid-cols-6 gap-2">
                             @foreach($hairstyles as $key => $svgContent)
                                 @php $num = str_replace('Perso-', '', $key); @endphp
-                                <label for="hair-style-{{ $key }}" class="cursor-pointer" data-svg-category="hair" data-svg-key="{{ $key }}" data-svg-content="{{ htmlspecialchars($svgContent) }}">
+                                <label for="hair-style-{{ $key }}" class="cursor-pointer" data-svg-category="hair" data-svg-key="{{ $key }}">
                                     <input type="radio" name="avatar_style[hair]" value="{{ $key }}" id="hair-style-{{ $key }}"
                                         {{ ($avatarStyle['hair'] ?? 'Perso-28') === $key ? 'checked' : '' }}
                                         class="sr-only peer"
-                                        onchange="rebuildPreview()"
+                                        onchange="submitAvatarForm()"
                                     >
                                     <div class="p-1 rounded-xl border-2 border-transparent peer-checked:border-pink-500 peer-checked:bg-pink-50 transition-all hover:bg-gray-50">
                                         <div style="--skin: {{ $avatarColors['skin'] ?? '#f5a57f' }}; --secondary: {{ $avatarColors['secondary'] ?? '#faea2f' }}; --accent: {{ $avatarColors['accent'] ?? '#f2969f' }}; --hair: {{ $avatarColors['hair'] ?? '#2d2d2d' }};">
@@ -116,7 +116,7 @@
                                         id="skin-{{ $loop->index }}"
                                         {{ ($avatarColors['skin'] ?? '#f5a57f') === $color ? 'checked' : '' }}
                                         class="sr-only peer"
-                                        onchange="updatePreview()"
+                                        onchange="submitColorForm()"
                                     >
                                     <label
                                         for="skin-{{ $loop->index }}"
@@ -139,7 +139,7 @@
                                         id="hair-{{ $loop->index }}"
                                         {{ ($avatarColors['hair'] ?? '#2d2d2d') === $color ? 'checked' : '' }}
                                         class="sr-only peer"
-                                        onchange="updatePreview()"
+                                        onchange="submitColorForm()"
                                     >
                                     <label
                                         for="hair-{{ $loop->index }}"
@@ -162,7 +162,7 @@
                                         id="secondary-{{ $loop->index }}"
                                         {{ ($avatarColors['secondary'] ?? '#faea2f') === $color ? 'checked' : '' }}
                                         class="sr-only peer"
-                                        onchange="updatePreview()"
+                                        onchange="submitColorForm()"
                                     >
                                     <label
                                         for="secondary-{{ $loop->index }}"
@@ -185,7 +185,7 @@
                                         id="accent-{{ $loop->index }}"
                                         {{ ($avatarColors['accent'] ?? '#f2969f') === $color ? 'checked' : '' }}
                                         class="sr-only peer"
-                                        onchange="updatePreview()"
+                                        onchange="submitColorForm()"
                                     >
                                     <label
                                         for="accent-{{ $loop->index }}"
@@ -230,81 +230,23 @@
 
     <script>
         /**
-         * Extraire le corps d'un SVG (entre <svg> et </svg>)
+         * Soumettre le formulaire lors du changement de style
+         * (le rendu est fait côté serveur par avatar-frame.blade.php)
          */
-        function extractSvgBody(svgString) {
-            const match = svgString.match(/<svg[^>]*>(.*?)<\/svg>/s);
-            return match ? match[1] : '';
+        function submitAvatarForm() {
+            document.getElementById('avatarForm').requestSubmit();
         }
 
         /**
-         * Stockage des contenus SVG chargés depuis les data attributes
+         * Mettre à jour les couleurs dans la prévisualisation et les vignettes
          */
-        const svgCache = {};
-
-        function getSvgContent(category, key) {
-            const cacheKey = category + '-' + key;
-            if (svgCache[cacheKey]) return svgCache[cacheKey];
-
-            const label = document.querySelector(`label[data-svg-category="${category}"][data-svg-key="${key}"]`);
-            if (!label) return '';
-            svgCache[cacheKey] = label.dataset.svgContent;
-            return svgCache[cacheKey];
-        }
-
-        /**
-         * Reconstruire la prévisualisation en assemblant visage + traits + cheveux
-         */
-        function rebuildPreview() {
-            // Récupérer les sélections
-            const faceKey = document.querySelector('input[name="avatar_style[face]"]:checked')?.value || 'Perso-18';
-            const featuresKey = document.querySelector('input[name="avatar_style[features]"]:checked')?.value || 'Perso-23';
-            const hairKey = document.querySelector('input[name="avatar_style[hair]"]:checked')?.value || 'Perso-28';
-
-            // Récupérer les couleurs actuelles
+        function submitColorForm() {
             const skinColor = document.querySelector('input[name="avatar_colors[skin]"]:checked')?.value || '#f5a57f';
             const hairColor = document.querySelector('input[name="avatar_colors[hair]"]:checked')?.value || '#2d2d2d';
             const secondaryColor = document.querySelector('input[name="avatar_colors[secondary]"]:checked')?.value || '#faea2f';
             const accentColor = document.querySelector('input[name="avatar_colors[accent]"]:checked')?.value || '#f2969f';
 
-            // Charger les 3 SVGs
-            const faceSvg = getSvgContent('face', faceKey);
-            const featuresSvg = getSvgContent('features', featuresKey);
-            const hairSvg = getSvgContent('hair', hairKey);
-
-            // Trouver le conteneur de preview
-            const previewContainer = document.querySelector('#avatarPreview .relative');
-            if (!previewContainer) return;
-
-            // Appliquer les couleurs au conteneur parent
-            previewContainer.style.setProperty('--skin', skinColor);
-            previewContainer.style.setProperty('--hair', hairColor);
-            previewContainer.style.setProperty('--secondary', secondaryColor);
-            previewContainer.style.setProperty('--accent', accentColor);
-
-            // Construire le SVG final
-            const svgHtml = `
-                <svg viewBox="0 0 271.31 271.31" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;">
-                    ${hairSvg ? extractSvgBody(hairSvg) : ''}
-                    ${faceSvg ? extractSvgBody(faceSvg) : ''}
-                    ${featuresSvg ? extractSvgBody(featuresSvg) : ''}
-                </svg>
-            `;
-
-            previewContainer.innerHTML = svgHtml;
-        }
-
-        /**
-         * Mettre à jour les couleurs sans changer la composition
-         */
-        function updatePreview() {
-            const skinColor = document.querySelector('input[name="avatar_colors[skin]"]:checked')?.value || '#f5a57f';
-            const hairColor = document.querySelector('input[name="avatar_colors[hair]"]:checked')?.value || '#2d2d2d';
-            const secondaryColor = document.querySelector('input[name="avatar_colors[secondary]"]:checked')?.value || '#faea2f';
-            const accentColor = document.querySelector('input[name="avatar_colors[accent]"]:checked')?.value || '#f2969f';
-
-            // Appliquer aux éléments de la preview et aux vignettes
-            document.querySelectorAll('#avatarPreview [style*="--skin"], [class*="grid"] [style*="--skin"]').forEach(el => {
+            document.querySelectorAll('[style*="--skin"]').forEach(el => {
                 el.style.setProperty('--skin', skinColor);
                 el.style.setProperty('--hair', hairColor);
                 el.style.setProperty('--secondary', secondaryColor);
