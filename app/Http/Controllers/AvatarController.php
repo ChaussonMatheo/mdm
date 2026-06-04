@@ -13,13 +13,20 @@ class AvatarController extends Controller
     {
         $user = auth()->user();
 
-        $styles = $this->getAvailableStyles();
+        $avatarStyle = $user->avatar_style ?? json_encode([
+            'face' => 'Perso-18',
+            'features' => 'Perso-23',
+            'hair' => 'Perso-28',
+        ]);
+        $avatarStyle = is_string($avatarStyle) ? json_decode($avatarStyle, true) : $avatarStyle;
 
         return view('avatar.customize', [
             'user' => $user,
             'avatarColors' => $user->avatar_colors ?? $this->getDefaultColors(),
-            'avatarStyle' => $user->avatar_style ?? 'Perso-28',
-            'styles' => $styles,
+            'avatarStyle' => $avatarStyle,
+            'faces' => $this->getSvgGroup('visage', 18, 20),
+            'features' => $this->getSvgGroup('visage', 21, 24),
+            'hairstyles' => $this->getSvgGroup('visage', 25, 31),
         ]);
     }
 
@@ -34,7 +41,10 @@ class AvatarController extends Controller
             'avatar_colors.hair' => 'required|string|regex:/^#[0-9a-fA-F]{6}$/',
             'avatar_colors.secondary' => 'required|string|regex:/^#[0-9a-fA-F]{6}$/',
             'avatar_colors.accent' => 'required|string|regex:/^#[0-9a-fA-F]{6}$/',
-            'avatar_style' => 'nullable|string|max:50',
+            'avatar_style' => 'nullable|array',
+            'avatar_style.face' => 'required_with:avatar_style|string|max:50',
+            'avatar_style.features' => 'required_with:avatar_style|string|max:50',
+            'avatar_style.hair' => 'required_with:avatar_style|string|max:50',
         ]);
 
         $data = [
@@ -42,42 +52,28 @@ class AvatarController extends Controller
         ];
 
         if (isset($validated['avatar_style'])) {
-            $data['avatar_style'] = $validated['avatar_style'];
+            $data['avatar_style'] = json_encode($validated['avatar_style']);
         }
 
         auth()->user()->update($data);
-
-        if ($request->has('preview_style')) {
-            return redirect()->route('avatar.edit');
-        }
 
         return redirect()->route('avatar.edit')->with('success', 'Avatar personnalisé avec succès !');
     }
 
     /**
-     * Retourner la liste des styles d'avatar disponibles.
+     * Charger un groupe de SVGs.
      */
-    private function getAvailableStyles(): array
+    private function getSvgGroup(string $folder, int $from, int $to): array
     {
-        $path = resource_path('svg/visage');
-        $files = glob($path . '/Perso-*.svg');
-        $styles = [];
-
-        foreach ($files as $file) {
-            $basename = pathinfo($file, PATHINFO_FILENAME);
-            $num = str_replace('Perso-', '', $basename);
-
-            $styles[$basename] = [
-                'name' => "Style {$num}",
-                'path' => "svg/visage/{$basename}.svg",
-                'preview' => file_get_contents($file),
-            ];
+        $items = [];
+        foreach (range($from, $to) as $num) {
+            $basename = "Perso-{$num}";
+            $path = resource_path("svg/{$folder}/{$basename}.svg");
+            if (file_exists($path)) {
+                $items[$basename] = file_get_contents($path);
+            }
         }
-
-        // Trier par numéro
-        ksort($styles);
-
-        return $styles;
+        return $items;
     }
 
     /**
