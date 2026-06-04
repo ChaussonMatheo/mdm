@@ -18,11 +18,14 @@ class AvatarRenderer
             'accent' => '#f2969f',
         ];
 
-        $style = $user->avatar_style ?? [
-            'face' => 'Perso-18',
-            'features' => 'Perso-23',
-            'hair' => 'Perso-28',
-        ];
+        $style = $user->avatar_style;
+        if (!is_array($style)) {
+            $style = [
+                'face' => 'Perso-18',
+                'features' => 'Perso-23',
+                'hair' => 'Perso-28',
+            ];
+        }
 
         return view('components.avatar-frame', [
             'colors' => $colors,
