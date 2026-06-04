@@ -26,10 +26,8 @@
             >
                 <div class="flex items-center gap-4">
                     <div class="w-14 h-14 flex items-center justify-center overflow-hidden">
-                        <x-avatar-frame
-                            size="w-16 h-16"
-                            x-bind:style="getAvatarStyle(participant)"
-                        />
+                        <!-- avatar pré-rendu côté serveur -->
+                        <div class="w-full h-full" x-html="participant.avatar_html"></div>
                     </div>
                     <span class="text-[15px] font-bold text-black" x-text="participant.id === userId ? 'Vous' : participant.name"></span>
                 </div>

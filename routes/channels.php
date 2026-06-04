@@ -18,7 +18,9 @@ Broadcast::channel('sessions.{sessionId}', function ($user, $sessionId) {
         return [
             'id' => $user->id,
             'name' => $user->name,
-            'avatar_colors' => $user->avatar_colors
+            'avatar_colors' => $user->avatar_colors,
+            'avatar_style' => $user->avatar_style,
+            'avatar_html' => \App\Support\AvatarRenderer::renderInline($user),
         ];
     }
 
