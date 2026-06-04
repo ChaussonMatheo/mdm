@@ -9,7 +9,7 @@
             <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">Nouvelle session</h2>
             <p class="text-gray-600 dark:text-gray-400 mb-6">Rejoignez ou créer une session.</p>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                 <!-- Créer une session -->
                 <a href="{{ route('sessions.create') }}" class="bg-[#E6066B] text-white rounded-[32px] px-8 py-6 flex items-center justify-between transition-all hover:bg-[#CC0E5F]">
                     <div class="text-left">
@@ -44,6 +44,17 @@
                     </form>
                 </div>
             </div>
+
+            <!-- Ministères card -->
+            <a href="{{ route('ministries.index') }}" class="block bg-[#F8B803] text-gray-900 rounded-[32px] px-8 py-6 flex items-center justify-between transition-all hover:bg-[#E0A500]">
+                <div class="text-left">
+                    <h3 class="text-xl font-bold mb-1">🏛️ Les Ministères</h3>
+                    <p class="text-gray-700 text-sm">Attribuez des responsabilités aux membres de votre famille</p>
+                </div>
+                <svg class="w-6 h-6 ml-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                </svg>
+            </a>
         </div>
     </div>
 </x-app-layout>

@@ -44,6 +44,14 @@ class User extends Authenticatable
     }
 
     /**
+     * Get the ministries assigned to this user.
+     */
+    public function ministries(): BelongsToMany
+    {
+        return $this->belongsToMany(Ministry::class)->withTimestamps();
+    }
+
+    /**
      * Get the attributes that should be cast.
      *
      * @return array<string, string>
