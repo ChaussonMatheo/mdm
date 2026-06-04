@@ -13,9 +13,13 @@ class AvatarController extends Controller
     {
         $user = auth()->user();
 
+        $styles = $this->getAvailableStyles();
+
         return view('avatar.customize', [
             'user' => $user,
             'avatarColors' => $user->avatar_colors ?? $this->getDefaultColors(),
+            'avatarStyle' => $user->avatar_style ?? 'Perso-28',
+            'styles' => $styles,
         ]);
     }
 
@@ -30,11 +34,50 @@ class AvatarController extends Controller
             'avatar_colors.hair' => 'required|string|regex:/^#[0-9a-fA-F]{6}$/',
             'avatar_colors.secondary' => 'required|string|regex:/^#[0-9a-fA-F]{6}$/',
             'avatar_colors.accent' => 'required|string|regex:/^#[0-9a-fA-F]{6}$/',
+            'avatar_style' => 'nullable|string|max:50',
         ]);
 
-        auth()->user()->update($validated);
+        $data = [
+            'avatar_colors' => $validated['avatar_colors'],
+        ];
+
+        if (isset($validated['avatar_style'])) {
+            $data['avatar_style'] = $validated['avatar_style'];
+        }
+
+        auth()->user()->update($data);
+
+        if ($request->has('preview_style')) {
+            return redirect()->route('avatar.edit');
+        }
 
         return redirect()->route('avatar.edit')->with('success', 'Avatar personnalisé avec succès !');
+    }
+
+    /**
+     * Retourner la liste des styles d'avatar disponibles.
+     */
+    private function getAvailableStyles(): array
+    {
+        $path = resource_path('svg/visage');
+        $files = glob($path . '/Perso-*.svg');
+        $styles = [];
+
+        foreach ($files as $file) {
+            $basename = pathinfo($file, PATHINFO_FILENAME);
+            $num = str_replace('Perso-', '', $basename);
+
+            $styles[$basename] = [
+                'name' => "Style {$num}",
+                'path' => "svg/visage/{$basename}.svg",
+                'preview' => file_get_contents($file),
+            ];
+        }
+
+        // Trier par numéro
+        ksort($styles);
+
+        return $styles;
     }
 
     /**

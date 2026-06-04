@@ -20,8 +20,30 @@
                 <!-- Preview -->
                 <div class="bg-white rounded-2xl ">
                     <div id="avatarPreview" class="text-center py-6 justify-center bg-[#FAEA2F] rounded-xl">
-                        <x-avatar-frame :colors="$avatarColors" />
+                        <x-avatar-frame :colors="$avatarColors" :style="$avatarStyle" />
                         <p class="text-2xl text-[#E6066B] font-bold">{{ auth()->user()->name }}</p>
+                    </div>
+                </div>
+
+                <!-- Style Selection -->
+                <div class="bg-white rounded-2xl">
+                    <h2 class="text-xl font-bold text-gray-900 mb-6">Choisissez votre style</h2>
+                    <div class="grid grid-cols-3 sm:grid-cols-5 gap-3">
+                        @foreach($styles as $key => $style)
+                            <label for="style-{{ $key }}" class="cursor-pointer">
+                                <input type="radio" name="avatar_style" value="{{ $key }}" id="style-{{ $key }}"
+                                    {{ $avatarStyle === $key ? 'checked' : '' }}
+                                    class="sr-only peer"
+                                    onchange="updatePreviewStyle()"
+                                >
+                                <div class="p-2 rounded-xl border-2 border-transparent peer-checked:border-pink-500 peer-checked:bg-pink-50 transition-all hover:bg-gray-50">
+                                    <div style="--skin: {{ $avatarColors['skin'] ?? '#f5a57f' }}; --hair: {{ $avatarColors['hair'] ?? '#2d2d2d' }}; --secondary: {{ $avatarColors['secondary'] ?? '#faea2f' }}; --accent: {{ $avatarColors['accent'] ?? '#f2969f' }};">
+                                        {!! str_replace('<svg', '<svg style="width:100%;height:auto;max-width:60px"', $style['preview']) !!}
+                                    </div>
+                                    <p class="text-xs text-center mt-1 font-medium text-gray-700">{{ $style['name'] }}</p>
+                                </div>
+                            </label>
+                        @endforeach
                     </div>
                 </div>
 
@@ -161,14 +183,47 @@
             const secondaryColor = document.querySelector('input[name="avatar_colors[secondary]"]:checked').value;
             const accentColor = document.querySelector('input[name="avatar_colors[accent]"]:checked').value;
 
-            // Update SVG CSS variables
-            const svg = document.querySelector('#avatarPreview svg');
-            if (svg) {
-                svg.style.setProperty('--skin', skinColor);
-                svg.style.setProperty('--hair', hairColor);
-                svg.style.setProperty('--secondary', secondaryColor);
-                svg.style.setProperty('--accent', accentColor);
-            }
+            // Update all SVG CSS variables in preview and thumbnails
+            document.querySelectorAll('#avatarPreview [style*="--skin"], .grid [style*="--skin"]').forEach(el => {
+                el.style.setProperty('--skin', skinColor);
+                el.style.setProperty('--hair', hairColor);
+                el.style.setProperty('--secondary', secondaryColor);
+                el.style.setProperty('--accent', accentColor);
+            });
+        }
+
+        function updatePreviewStyle() {
+            const selectedStyle = document.querySelector('input[name="avatar_style"]:checked');
+            if (!selectedStyle) return;
+
+            // Get current colors
+            const skinColor = document.querySelector('input[name="avatar_colors[skin]"]:checked')?.value || '#f5a57f';
+            const hairColor = document.querySelector('input[name="avatar_colors[hair]"]:checked')?.value || '#2d2d2d';
+            const secondaryColor = document.querySelector('input[name="avatar_colors[secondary]"]:checked')?.value || '#faea2f';
+            const accentColor = document.querySelector('input[name="avatar_colors[accent]"]:checked')?.value || '#f2969f';
+
+            // Find the thumbnail SVG for the selected style
+            const thumbSvg = selectedStyle.closest('label').querySelector('svg');
+            if (!thumbSvg) return;
+
+            // Clone the SVG and scale it up for the preview
+            const previewContainer = document.querySelector('#avatarPreview .w-full');
+            if (!previewContainer) return;
+
+            const clonedSvg = thumbSvg.cloneNode(true);
+            clonedSvg.style.maxWidth = '200px';
+            clonedSvg.style.width = '100%';
+            clonedSvg.style.height = 'auto';
+
+            // Replace the preview content
+            previewContainer.innerHTML = '';
+            previewContainer.appendChild(clonedSvg);
+
+            // Apply colors directly on the cloned SVG
+            clonedSvg.style.setProperty('--skin', skinColor);
+            clonedSvg.style.setProperty('--hair', hairColor);
+            clonedSvg.style.setProperty('--secondary', secondaryColor);
+            clonedSvg.style.setProperty('--accent', accentColor);
         }
     </script>
 </x-app-layout>
