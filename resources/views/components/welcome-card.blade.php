@@ -1,10 +1,19 @@
 @props(['user' => auth()->user()])
 
+@php
+    // Ensure avatar_style is an array (it might be corrupted if DB column is still string)
+    $style = $user->avatar_style;
+    if (!is_array($style)) {
+        $decoded = json_decode($style, true);
+        $style = is_array($decoded) ? $decoded : ['face' => 'Perso-18', 'features' => 'Perso-23', 'hair' => 'Perso-28'];
+    }
+@endphp
+
 <div class="mt-4 w-full  mx-auto bg-[#FAEA2F] rounded-[32px] px-8 sm:px-12 text-center">
     <!-- Avatar Circle -->
     <div class="flex justify-center">
         <div class="w-64 h-52  flex items-center justify-center ">
-            <x-avatar-frame :colors="$user->avatar_colors" :style="$user->avatar_style" size="w-58 h-full" />
+            <x-avatar-frame :colors="$user->avatar_colors" :style="$style" size="w-58 h-full" />
         </div>
     </div>
 
