@@ -32,6 +32,14 @@ Route::middleware('auth')->group(function () {
     Route::post('/sessions/{session}/answer', [SessionController::class, 'answer'])->name('sessions.answer');
     Route::post('/sessions/{session}/results', [SessionController::class, 'showResults'])->name('sessions.results');
     Route::post('/sessions/{session}/next', [SessionController::class, 'next'])->name('sessions.next');
+
+    // Ministry routes
+    Route::get('/ministries', [App\Http\Controllers\MinistryController::class, 'index'])->name('ministries.index');
+    Route::post('/ministries', [App\Http\Controllers\MinistryController::class, 'store'])->name('ministries.store');
+    Route::put('/ministries/{ministry}', [App\Http\Controllers\MinistryController::class, 'update'])->name('ministries.update');
+    Route::delete('/ministries/{ministry}', [App\Http\Controllers\MinistryController::class, 'destroy'])->name('ministries.destroy');
+    Route::post('/ministries/{ministry}/assign', [App\Http\Controllers\MinistryController::class, 'assignUser'])->name('ministries.assign');
+    Route::delete('/ministries/{ministry}/user/{user}', [App\Http\Controllers\MinistryController::class, 'removeUser'])->name('ministries.remove-user');
 });
 
 require __DIR__.'/auth.php';

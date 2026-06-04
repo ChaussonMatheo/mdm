@@ -17,6 +17,14 @@ class Family extends Model
     }
 
     /**
+     * Get the ministries for this family.
+     */
+    public function ministries()
+    {
+        return $this->hasMany(Ministry::class);
+    }
+
+    /**
      * The "booted" method of the model.
      */
     protected static function booted(): void
