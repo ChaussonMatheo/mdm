@@ -4,7 +4,7 @@
     <!-- Avatar Circle -->
     <div class="flex justify-center">
         <div class="w-64 h-52  flex items-center justify-center ">
-            <x-avatar-frame :colors="$user->avatar_colors" size="w-58 h-full" />
+            <x-avatar-frame :colors="$user->avatar_colors" :style="$user->avatar_style" size="w-58 h-full" />
         </div>
     </div>
 

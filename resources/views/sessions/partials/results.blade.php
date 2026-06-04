@@ -41,7 +41,8 @@
             <template x-for="participant in participants" :key="participant.id">
                 <div class="flex flex-col items-center relative">
                     <div class="relative">
-                        <x-avatar-frame class="w-20 h-20" ::style="getAvatarStyle(participant)" />
+                        <!-- avatar pré-rendu côté serveur -->
+                        <div class="w-20 h-20" x-html="participant.avatar_html"></div>
                         <!-- Pastille de réponse -->
                         <div class="absolute bottom-0 right-0 w-6 h-6 rounded-full border-[3px] border-white shadow-md z-10"
                              :class="{

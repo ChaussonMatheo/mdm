@@ -230,11 +230,44 @@
 
     <script>
         /**
-         * Soumettre le formulaire lors du changement de style
-         * (le rendu est fait côté serveur par avatar-frame.blade.php)
+         * Appel AJAX discret pour mettre à jour le style sans rechargement.
          */
         function submitAvatarForm() {
-            document.getElementById('avatarForm').requestSubmit();
+            const face = document.querySelector('input[name="avatar_style[face]"]:checked')?.value || 'Perso-18';
+            const features = document.querySelector('input[name="avatar_style[features]"]:checked')?.value || 'Perso-23';
+            const hair = document.querySelector('input[name="avatar_style[hair]"]:checked')?.value || 'Perso-28';
+
+            // Appliquer un petit effet de transition
+            const preview = document.querySelector('#avatarPreview');
+            preview.style.opacity = '0.5';
+            preview.style.transition = 'opacity 0.2s';
+
+            fetch('{{ route('avatar.preview') }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'Accept': 'text/html',
+                },
+                body: JSON.stringify({ face, features, hair }),
+            })
+                .then(res => res.text())
+                .then(html => {
+                    // Remplacer uniquement le composant avatar dans la preview
+                    const temp = document.createElement('div');
+                    temp.innerHTML = html;
+                    const newAvatar = temp.querySelector('[style*="--skin"]');
+                    const oldAvatar = preview.querySelector('[style*="--skin"]');
+                    if (newAvatar && oldAvatar) {
+                        oldAvatar.replaceWith(newAvatar);
+                    } else if (newAvatar) {
+                        preview.insertBefore(newAvatar, preview.querySelector('p'));
+                    }
+                    preview.style.opacity = '1';
+                })
+                .catch(() => {
+                    preview.style.opacity = '1';
+                });
         }
 
         /**

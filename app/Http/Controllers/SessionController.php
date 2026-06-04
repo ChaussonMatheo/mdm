@@ -110,6 +110,10 @@ class SessionController extends Controller
     public function show(Session $session)
     {
         $session->load(['participants', 'modules.category', 'currentModule.category']);
+        // Ajouter le HTML de l'avatar pour chaque participant dans le lobby
+        $session->participants->each(function ($p) {
+            $p->setAppends(['avatar_html']);
+        });
 
         if ($session->is_showing_results) {
             $results = GameSessionAnswer::where('game_session_id', $session->id)

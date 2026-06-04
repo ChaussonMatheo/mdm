@@ -19,6 +19,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     // Avatar routes
     Route::get('/avatar', [AvatarController::class, 'edit'])->name('avatar.edit');
+    Route::post("/avatar/preview", [AvatarController::class, "preview"])->name("avatar.preview");
     Route::patch('/avatar', [AvatarController::class, 'update'])->name('avatar.update');
     // Session routes
     Route::get('/sessions/create', [SessionController::class, 'create'])->name('sessions.create');

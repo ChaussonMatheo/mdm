@@ -31,6 +31,31 @@ class AvatarController extends Controller
     }
 
     /**
+     * Retourner le HTML de l'avatar-frame (pour AJAX discret)
+     */
+    public function preview(Request $request)
+    {
+        $style = $request->validate([
+            'face' => 'required|string|max:50',
+            'features' => 'required|string|max:50',
+            'hair' => 'required|string|max:50',
+        ]);
+
+        $user = auth()->user();
+        $colors = $user->avatar_colors ?? $this->getDefaultColors();
+
+        // Sauvegarder silencieusement
+        $user->update([
+            'avatar_style' => json_encode($style),
+        ]);
+
+        return view('components.avatar-frame', [
+            'colors' => $colors,
+            'style' => $style,
+        ])->render();
+    }
+
+    /**
      * Mettre à jour l'avatar de l'utilisateur.
      */
     public function update(Request $request)
@@ -57,7 +82,7 @@ class AvatarController extends Controller
 
         auth()->user()->update($data);
 
-        return redirect()->route('avatar.edit')->with('success', 'Avatar personnalisé avec succès !');
+        return redirect()->route('avatar.edit');
     }
 
     /**

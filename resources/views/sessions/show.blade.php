@@ -44,18 +44,6 @@
                     return this.totalAnswers >= this.participants.length && this.participants.length > 0;
                 },
 
-                getAvatarStyle(participant) {
-                    let colors = participant.avatar_colors;
-                    if (typeof colors === 'string') {
-                        try {
-                            colors = JSON.parse(colors);
-                        } catch (e) {
-                            colors = {};
-                        }
-                    }
-                    colors = colors || {};
-                    return `--skin: ${colors.skin || '#f5a57f'}; --secondary: ${colors.secondary || '#faea2f'}; --accent: ${colors.accent || '#f2969f'}; --hair: ${colors.hair || '#2d2d2d'};`;
-                },
 
                 init() {
                     console.log('Game initialized on channel: sessions.' + this.sessionId);
