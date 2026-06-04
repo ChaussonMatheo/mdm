@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Ministry;
 use App\Models\User;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -11,6 +12,7 @@ use Illuminate\View\View;
 
 class MinistryController extends Controller
 {
+    use AuthorizesRequests;
     /**
      * Display all ministries for the user's family.
      */
