@@ -1,6 +1,9 @@
 @props(['colors' => ['skin' => '#f5a57f', 'secondary' => '#faea2f', 'accent' => '#f2969f', 'hair' => '#2d2d2d'], 'size' => 'w-48', 'style' => ['face' => 'Perso-18', 'features' => 'Perso-23', 'hair' => 'Perso-28']])
 
 @php
+    // Ensure style is an array (it may be a string if DB data is corrupted)
+    $style = is_array($style) ? $style : ['face' => 'Perso-18', 'features' => 'Perso-23', 'hair' => 'Perso-28'];
+
     $skin = $colors['skin'] ?? '#f5a57f';
     $secondary = $colors['secondary'] ?? '#faea2f';
     $accent = $colors['accent'] ?? '#f2969f';
