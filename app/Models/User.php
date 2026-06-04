@@ -64,4 +64,12 @@ class User extends Authenticatable
             'avatar_style' => 'array',
         ];
     }
+
+    /**
+     * Get the rendered avatar HTML for this user.
+     */
+    public function getAvatarHtmlAttribute(): string
+    {
+        return \App\Support\AvatarRenderer::renderInline($this);
+    }
 }
