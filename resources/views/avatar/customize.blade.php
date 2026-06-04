@@ -25,26 +25,78 @@
                     </div>
                 </div>
 
-                <!-- Style Selection -->
-                <div class="bg-white rounded-2xl">
-                    <h2 class="text-xl font-bold text-gray-900 mb-6">Choisissez votre style</h2>
-                    <div class="grid grid-cols-3 sm:grid-cols-5 gap-3">
-                        @foreach($styles as $key => $style)
-                            <label for="style-{{ $key }}" class="cursor-pointer">
-                                <input type="radio" name="avatar_style" value="{{ $key }}" id="style-{{ $key }}"
-                                    {{ $avatarStyle === $key ? 'checked' : '' }}
-                                    class="sr-only peer"
-                                    onchange="updatePreviewStyle()"
-                                >
-                                <div class="p-2 rounded-xl border-2 border-transparent peer-checked:border-pink-500 peer-checked:bg-pink-50 transition-all hover:bg-gray-50">
-                                    <div style="--skin: {{ $avatarColors['skin'] ?? '#f5a57f' }}; --hair: {{ $avatarColors['hair'] ?? '#2d2d2d' }}; --secondary: {{ $avatarColors['secondary'] ?? '#faea2f' }}; --accent: {{ $avatarColors['accent'] ?? '#f2969f' }};">
-                                        {!! str_replace('<svg', '<svg style="width:100%;height:auto;max-width:60px"', $style['preview']) !!}
+                <!-- Style Selection: Visage, Traits, Cheveux -->
+                <div class="bg-white rounded-2xl space-y-6">
+
+                    <!-- Visage -->
+                    <div>
+                        <h3 class="text-lg font-bold text-gray-900 mb-3">Forme du visage</h3>
+                        <div class="grid grid-cols-4 sm:grid-cols-6 gap-2">
+                            @foreach($faces as $key => $svgContent)
+                                @php $num = str_replace('Perso-', '', $key); @endphp
+                                <label for="face-{{ $key }}" class="cursor-pointer" data-svg-category="face" data-svg-key="{{ $key }}" data-svg-content="{{ htmlspecialchars($svgContent) }}">
+                                    <input type="radio" name="avatar_style[face]" value="{{ $key }}" id="face-{{ $key }}"
+                                        {{ ($avatarStyle['face'] ?? 'Perso-18') === $key ? 'checked' : '' }}
+                                        class="sr-only peer"
+                                        onchange="rebuildPreview()"
+                                    >
+                                    <div class="p-1 rounded-xl border-2 border-transparent peer-checked:border-pink-500 peer-checked:bg-pink-50 transition-all hover:bg-gray-50">
+                                        <div style="--skin: {{ $avatarColors['skin'] ?? '#f5a57f' }}; --secondary: {{ $avatarColors['secondary'] ?? '#faea2f' }}; --accent: {{ $avatarColors['accent'] ?? '#f2969f' }}; --hair: {{ $avatarColors['hair'] ?? '#2d2d2d' }};">
+                                            {!! str_replace('<svg', '<svg style="width:100%;height:auto;max-width:50px"', $svgContent) !!}
+                                        </div>
+                                        <p class="text-xs text-center font-medium text-gray-700">Visage {{ $num }}</p>
                                     </div>
-                                    <p class="text-xs text-center mt-1 font-medium text-gray-700">{{ $style['name'] }}</p>
-                                </div>
-                            </label>
-                        @endforeach
+                                </label>
+                            @endforeach
+                        </div>
                     </div>
+
+                    <!-- Traits du visage -->
+                    <div>
+                        <h3 class="text-lg font-bold text-gray-900 mb-3">Yeux, nez, bouche</h3>
+                        <div class="grid grid-cols-4 sm:grid-cols-6 gap-2">
+                            @foreach($features as $key => $svgContent)
+                                @php $num = str_replace('Perso-', '', $key); @endphp
+                                <label for="feat-{{ $key }}" class="cursor-pointer" data-svg-category="features" data-svg-key="{{ $key }}" data-svg-content="{{ htmlspecialchars($svgContent) }}">
+                                    <input type="radio" name="avatar_style[features]" value="{{ $key }}" id="feat-{{ $key }}"
+                                        {{ ($avatarStyle['features'] ?? 'Perso-23') === $key ? 'checked' : '' }}
+                                        class="sr-only peer"
+                                        onchange="rebuildPreview()"
+                                    >
+                                    <div class="p-1 rounded-xl border-2 border-transparent peer-checked:border-pink-500 peer-checked:bg-pink-50 transition-all hover:bg-gray-50">
+                                        <div style="--skin: {{ $avatarColors['skin'] ?? '#f5a57f' }}; --secondary: {{ $avatarColors['secondary'] ?? '#faea2f' }}; --accent: {{ $avatarColors['accent'] ?? '#f2969f' }}; --hair: {{ $avatarColors['hair'] ?? '#2d2d2d' }};">
+                                            {!! str_replace('<svg', '<svg style="width:100%;height:auto;max-width:50px"', $svgContent) !!}
+                                        </div>
+                                        <p class="text-xs text-center font-medium text-gray-700">Traits {{ $num }}</p>
+                                    </div>
+                                </label>
+                            @endforeach
+                        </div>
+                    </div>
+
+                    <!-- Cheveux -->
+                    <div>
+                        <h3 class="text-lg font-bold text-gray-900 mb-3">Coiffure</h3>
+                        <div class="grid grid-cols-4 sm:grid-cols-6 gap-2">
+                            @foreach($hairstyles as $key => $svgContent)
+                                @php $num = str_replace('Perso-', '', $key); @endphp
+                                <label for="hair-style-{{ $key }}" class="cursor-pointer" data-svg-category="hair" data-svg-key="{{ $key }}" data-svg-content="{{ htmlspecialchars($svgContent) }}">
+                                    <input type="radio" name="avatar_style[hair]" value="{{ $key }}" id="hair-style-{{ $key }}"
+                                        {{ ($avatarStyle['hair'] ?? 'Perso-28') === $key ? 'checked' : '' }}
+                                        class="sr-only peer"
+                                        onchange="rebuildPreview()"
+                                    >
+                                    <div class="p-1 rounded-xl border-2 border-transparent peer-checked:border-pink-500 peer-checked:bg-pink-50 transition-all hover:bg-gray-50">
+                                        <div style="--skin: {{ $avatarColors['skin'] ?? '#f5a57f' }}; --secondary: {{ $avatarColors['secondary'] ?? '#faea2f' }}; --accent: {{ $avatarColors['accent'] ?? '#f2969f' }}; --hair: {{ $avatarColors['hair'] ?? '#2d2d2d' }};">
+                                            {!! str_replace('<svg', '<svg style="width:100%;height:auto;max-width:50px"', $svgContent) !!}
+                                        </div>
+                                        <p class="text-xs text-center font-medium text-gray-700">Cheveux {{ $num }}</p>
+                                    </div>
+                                </label>
+                            @endforeach
+                        </div>
+                    </div>
+
                 </div>
 
                 <!-- Color Customization -->
@@ -177,53 +229,87 @@
     </div>
 
     <script>
-        function updatePreview() {
-            const skinColor = document.querySelector('input[name="avatar_colors[skin]"]:checked').value;
-            const hairColor = document.querySelector('input[name="avatar_colors[hair]"]:checked').value;
-            const secondaryColor = document.querySelector('input[name="avatar_colors[secondary]"]:checked').value;
-            const accentColor = document.querySelector('input[name="avatar_colors[accent]"]:checked').value;
-
-            // Update all SVG CSS variables in preview and thumbnails
-            document.querySelectorAll('#avatarPreview [style*="--skin"], .grid [style*="--skin"]').forEach(el => {
-                el.style.setProperty('--skin', skinColor);
-                el.style.setProperty('--hair', hairColor);
-                el.style.setProperty('--secondary', secondaryColor);
-                el.style.setProperty('--accent', accentColor);
-            });
+        /**
+         * Extraire le corps d'un SVG (entre <svg> et </svg>)
+         */
+        function extractSvgBody(svgString) {
+            const match = svgString.match(/<svg[^>]*>(.*?)<\/svg>/s);
+            return match ? match[1] : '';
         }
 
-        function updatePreviewStyle() {
-            const selectedStyle = document.querySelector('input[name="avatar_style"]:checked');
-            if (!selectedStyle) return;
+        /**
+         * Stockage des contenus SVG chargés depuis les data attributes
+         */
+        const svgCache = {};
 
-            // Get current colors
+        function getSvgContent(category, key) {
+            const cacheKey = category + '-' + key;
+            if (svgCache[cacheKey]) return svgCache[cacheKey];
+
+            const label = document.querySelector(`label[data-svg-category="${category}"][data-svg-key="${key}"]`);
+            if (!label) return '';
+            svgCache[cacheKey] = label.dataset.svgContent;
+            return svgCache[cacheKey];
+        }
+
+        /**
+         * Reconstruire la prévisualisation en assemblant visage + traits + cheveux
+         */
+        function rebuildPreview() {
+            // Récupérer les sélections
+            const faceKey = document.querySelector('input[name="avatar_style[face]"]:checked')?.value || 'Perso-18';
+            const featuresKey = document.querySelector('input[name="avatar_style[features]"]:checked')?.value || 'Perso-23';
+            const hairKey = document.querySelector('input[name="avatar_style[hair]"]:checked')?.value || 'Perso-28';
+
+            // Récupérer les couleurs actuelles
             const skinColor = document.querySelector('input[name="avatar_colors[skin]"]:checked')?.value || '#f5a57f';
             const hairColor = document.querySelector('input[name="avatar_colors[hair]"]:checked')?.value || '#2d2d2d';
             const secondaryColor = document.querySelector('input[name="avatar_colors[secondary]"]:checked')?.value || '#faea2f';
             const accentColor = document.querySelector('input[name="avatar_colors[accent]"]:checked')?.value || '#f2969f';
 
-            // Find the thumbnail SVG for the selected style
-            const thumbSvg = selectedStyle.closest('label').querySelector('svg');
-            if (!thumbSvg) return;
+            // Charger les 3 SVGs
+            const faceSvg = getSvgContent('face', faceKey);
+            const featuresSvg = getSvgContent('features', featuresKey);
+            const hairSvg = getSvgContent('hair', hairKey);
 
-            // Clone the SVG and scale it up for the preview
-            const previewContainer = document.querySelector('#avatarPreview .w-full');
+            // Trouver le conteneur de preview
+            const previewContainer = document.querySelector('#avatarPreview .relative');
             if (!previewContainer) return;
 
-            const clonedSvg = thumbSvg.cloneNode(true);
-            clonedSvg.style.maxWidth = '200px';
-            clonedSvg.style.width = '100%';
-            clonedSvg.style.height = 'auto';
+            // Appliquer les couleurs au conteneur parent
+            previewContainer.style.setProperty('--skin', skinColor);
+            previewContainer.style.setProperty('--hair', hairColor);
+            previewContainer.style.setProperty('--secondary', secondaryColor);
+            previewContainer.style.setProperty('--accent', accentColor);
 
-            // Replace the preview content
-            previewContainer.innerHTML = '';
-            previewContainer.appendChild(clonedSvg);
+            // Construire le SVG final
+            const svgHtml = `
+                <svg viewBox="0 0 271.31 271.31" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;">
+                    ${hairSvg ? extractSvgBody(hairSvg) : ''}
+                    ${faceSvg ? extractSvgBody(faceSvg) : ''}
+                    ${featuresSvg ? extractSvgBody(featuresSvg) : ''}
+                </svg>
+            `;
 
-            // Apply colors directly on the cloned SVG
-            clonedSvg.style.setProperty('--skin', skinColor);
-            clonedSvg.style.setProperty('--hair', hairColor);
-            clonedSvg.style.setProperty('--secondary', secondaryColor);
-            clonedSvg.style.setProperty('--accent', accentColor);
+            previewContainer.innerHTML = svgHtml;
+        }
+
+        /**
+         * Mettre à jour les couleurs sans changer la composition
+         */
+        function updatePreview() {
+            const skinColor = document.querySelector('input[name="avatar_colors[skin]"]:checked')?.value || '#f5a57f';
+            const hairColor = document.querySelector('input[name="avatar_colors[hair]"]:checked')?.value || '#2d2d2d';
+            const secondaryColor = document.querySelector('input[name="avatar_colors[secondary]"]:checked')?.value || '#faea2f';
+            const accentColor = document.querySelector('input[name="avatar_colors[accent]"]:checked')?.value || '#f2969f';
+
+            // Appliquer aux éléments de la preview et aux vignettes
+            document.querySelectorAll('#avatarPreview [style*="--skin"], [class*="grid"] [style*="--skin"]').forEach(el => {
+                el.style.setProperty('--skin', skinColor);
+                el.style.setProperty('--hair', hairColor);
+                el.style.setProperty('--secondary', secondaryColor);
+                el.style.setProperty('--accent', accentColor);
+            });
         }
     </script>
 </x-app-layout>

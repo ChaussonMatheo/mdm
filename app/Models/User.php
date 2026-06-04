@@ -61,7 +61,7 @@ class User extends Authenticatable
         return [
             'password' => 'hashed',
             'avatar_colors' => 'array',
-            'avatar_style' => 'string',
+            'avatar_style' => 'array',
         ];
     }
 }
