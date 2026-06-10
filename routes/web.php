@@ -40,6 +40,7 @@ Route::middleware('auth')->group(function () {
     Route::put('/ministries/{ministry}', [App\Http\Controllers\MinistryController::class, 'update'])->name('ministries.update');
     Route::delete('/ministries/{ministry}', [App\Http\Controllers\MinistryController::class, 'destroy'])->name('ministries.destroy');
     Route::post('/ministries/{ministry}/assign', [App\Http\Controllers\MinistryController::class, 'assignUser'])->name('ministries.assign');
+    Route::post('/ministries/{ministry}/suppleant', [App\Http\Controllers\MinistryController::class, 'assignSuppleant'])->name('ministries.assign-suppleant');
     Route::delete('/ministries/{ministry}/user/{user}', [App\Http\Controllers\MinistryController::class, 'removeUser'])->name('ministries.remove-user');
 });
 

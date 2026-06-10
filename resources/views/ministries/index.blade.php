@@ -55,19 +55,42 @@
                         </div>
                     </div>
 
-                    <!-- Personne assignée -->
+                    <!-- Titulaire -->
                     <div class="border-t border-gray-100 dark:border-gray-700 pt-4 mt-4">
-                        <p class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">Attribué à</p>
-                        @if ($ministry->users->isNotEmpty())
-                            @foreach ($ministry->users as $assignedUser)
+                        <p class="text-xs font-semibold text-[#E6066B] uppercase tracking-wider mb-2">Titulaire</p>
+                        @php $titulaire = $ministry->titulaire->first(); @endphp
+                        @if ($titulaire)
+                            <div class="flex items-center justify-between py-1">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-8 h-8 rounded-full bg-[#64348B] text-white flex items-center justify-center text-sm font-bold">
+                                        {{ strtoupper(substr($titulaire->name, 0, 1)) }}
+                                    </div>
+                                    <span class="text-sm font-medium text-gray-700 dark:text-gray-300">{{ $titulaire->name }}</span>
+                                </div>
+                                <form action="{{ route('ministries.remove-user', [$ministry, $titulaire]) }}" method="POST">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button class="text-gray-400 hover:text-red-500 text-xs">Retirer</button>
+                                </form>
+                            </div>
+                        @else
+                            <p class="text-sm text-gray-400 italic">Aucun titulaire</p>
+                        @endif
+                    </div>
+
+                    <!-- Suppleants -->
+                    <div class="border-t border-gray-100 dark:border-gray-700 pt-3 mt-3">
+                        <p class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">Suppleants</p>
+                        @if ($ministry->suppleants->isNotEmpty())
+                            @foreach ($ministry->suppleants as $suppleant)
                                 <div class="flex items-center justify-between py-1">
                                     <div class="flex items-center gap-2">
-                                        <div class="w-8 h-8 rounded-full bg-[#64348B] text-white flex items-center justify-center text-sm font-bold">
-                                            {{ strtoupper(substr($assignedUser->name, 0, 1)) }}
+                                        <div class="w-8 h-8 rounded-full bg-gray-300 dark:bg-gray-600 text-gray-700 dark:text-gray-200 flex items-center justify-center text-sm font-bold">
+                                            {{ strtoupper(substr($suppleant->name, 0, 1)) }}
                                         </div>
-                                        <span class="text-sm font-medium text-gray-700 dark:text-gray-300">{{ $assignedUser->name }}</span>
+                                        <span class="text-sm font-medium text-gray-700 dark:text-gray-300">{{ $suppleant->name }}</span>
                                     </div>
-                                    <form action="{{ route('ministries.remove-user', [$ministry, $assignedUser]) }}" method="POST">
+                                    <form action="{{ route('ministries.remove-user', [$ministry, $suppleant]) }}" method="POST">
                                         @csrf
                                         @method('DELETE')
                                         <button class="text-gray-400 hover:text-red-500 text-xs">Retirer</button>
@@ -75,31 +98,51 @@
                                 </div>
                             @endforeach
                         @else
-                            <p class="text-sm text-gray-400 italic">Personne n'est encore attribué</p>
+                            <p class="text-sm text-gray-400 italic">Aucun suppleant</p>
                         @endif
                     </div>
 
-                    <!-- Formulaire d'attribution -->
-                    <form action="{{ route('ministries.assign', $ministry) }}" method="POST" class="mt-3 flex gap-2">
-                        @csrf
-                        <select name="user_id" class="w-full text-sm rounded-full border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 px-3 py-1.5 focus:ring-[#E6066B] focus:border-[#E6066B]">
-                            <option value="">Attribuer à...</option>
-                            @foreach ($familyMembers as $member)
-                                @if (!$ministry->users->contains($member->id))
-                                    <option value="{{ $member->id }}">{{ $member->name }}</option>
-                                @endif
-                            @endforeach
-                        </select>
-                        <button type="submit" class="bg-[#64348B] text-white rounded-full px-4 py-1.5 text-sm font-semibold hover:bg-[#52297A] transition-all whitespace-nowrap">
-                            Attribuer
-                        </button>
-                    </form>
+                    <!-- Boutons d'ajout -->
+                    <div class="mt-3 flex flex-col gap-2">
+                        @if (!$titulaire)
+                            <form action="{{ route('ministries.assign', $ministry) }}" method="POST" class="flex gap-2">
+                                @csrf
+                                <select name="user_id" class="w-full text-sm rounded-full border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 px-3 py-1.5 focus:ring-[#E6066B] focus:border-[#E6066B]">
+                                    <option value="">Attribuer titulaire...</option>
+                                    @foreach ($familyMembers as $member)
+                                        @if (!$ministry->users->contains($member->id))
+                                            <option value="{{ $member->id }}">{{ $member->name }}</option>
+                                        @endif
+                                    @endforeach
+                                </select>
+                                <button type="submit" class="bg-[#E6066B] text-white rounded-full px-4 py-1.5 text-sm font-semibold hover:bg-[#CC0E5F] transition-all whitespace-nowrap">
+                                    Ajouter
+                                </button>
+                            </form>
+                        @endif
+                        @if ($ministry->suppleants->count() < 3)
+                            <form action="{{ route('ministries.assign-suppleant', $ministry) }}" method="POST" class="flex gap-2">
+                                @csrf
+                                <select name="user_id" class="w-full text-sm rounded-full border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 px-3 py-1.5 focus:ring-[#E6066B] focus:border-[#E6066B]">
+                                    <option value="">Ajouter suppleant...</option>
+                                    @foreach ($familyMembers as $member)
+                                        @if (!$ministry->users->contains($member->id))
+                                            <option value="{{ $member->id }}">{{ $member->name }}</option>
+                                        @endif
+                                    @endforeach
+                                </select>
+                                <button type="submit" class="bg-[#64348B] text-white rounded-full px-4 py-1.5 text-sm font-semibold hover:bg-[#52297A] transition-all whitespace-nowrap">
+                                    Ajouter
+                                </button>
+                            </form>
+                        @endif
+                    </div>
                 </div>
             @empty
                 <div class="col-span-full text-center py-12 text-gray-500 dark:text-gray-400">
                     <p class="text-5xl mb-4">🏛️</p>
-                    <p class="text-lg font-medium">Aucun ministère pour le moment</p>
-                    <p class="text-sm">Créez votre premier ministère pour commencer à attribuer des responsabilités.</p>
+                    <p class="text-lg font-medium">Aucun ministere pour le moment</p>
+                    <p class="text-sm">Cree votre premier ministere pour commencer a attribuer des responsabilites.</p>
                 </div>
             @endforelse
         </div>
