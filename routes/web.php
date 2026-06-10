@@ -43,4 +43,13 @@ Route::middleware('auth')->group(function () {
     Route::delete('/ministries/{ministry}/user/{user}', [App\Http\Controllers\MinistryController::class, 'removeUser'])->name('ministries.remove-user');
 });
 
+// Settings routes
+Route::middleware('auth')->group(function () {
+    Route::get('/settings', [App\Http\Controllers\SettingsController::class, 'index'])->name('settings.index');
+    Route::patch('/settings/profile', [App\Http\Controllers\SettingsController::class, 'updateProfile'])->name('settings.profile.update');
+    Route::post('/settings/family/join', [App\Http\Controllers\SettingsController::class, 'joinFamily'])->name('settings.family.join');
+    Route::delete('/settings/family/leave', [App\Http\Controllers\SettingsController::class, 'leaveFamily'])->name('settings.family.leave');
+    Route::post('/settings/session/join', [App\Http\Controllers\SettingsController::class, 'joinSession'])->name('settings.session.join');
+});
+
 require __DIR__.'/auth.php';

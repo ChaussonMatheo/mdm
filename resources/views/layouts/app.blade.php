@@ -29,9 +29,9 @@
                             @endempty
                         </div>
                         <!-- Settings Icon -->
-                        <button class="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
+                        <a href="{{ route('settings.index') }}" class="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
                             <i data-lucide="settings" class="w-8 h-8"></i>
-                        </button>
+                        </a>
                     </div>
                 </div>
             </header>
