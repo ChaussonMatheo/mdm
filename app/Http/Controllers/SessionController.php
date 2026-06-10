@@ -136,7 +136,16 @@ class SessionController extends Controller
             ? $session->answers()->where('user_id', auth()->id())->where('module_id', $session->current_module_id)->exists()
             : false;
 
-        return view('sessions.show', compact('session', 'results', 'participantAnswers', 'hasAnswered'));
+        // For finished sessions, load per-module answers for the current user
+        $userModuleAnswers = collect();
+        if ($session->isFinished()) {
+            $userModuleAnswers = GameSessionAnswer::where('game_session_id', $session->id)
+                ->where('user_id', auth()->id())
+                ->get()
+                ->keyBy('module_id');
+        }
+
+        return view('sessions.show', compact('session', 'results', 'participantAnswers', 'hasAnswered', 'userModuleAnswers'));
     }
 
     /**
