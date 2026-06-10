@@ -19,10 +19,40 @@ class Ministry extends Model
     }
 
     /**
-     * Get the users assigned to this ministry.
+     * Get the users assigned to this ministry (all roles).
      */
     public function users(): BelongsToMany
     {
         return $this->belongsToMany(User::class)->withTimestamps();
+    }
+
+    /**
+     * Get all assignments (pivot) for this ministry.
+     */
+    public function assignments(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class)
+            ->withPivot('role')
+            ->withTimestamps();
+    }
+
+    /**
+     * Get the main assigned user (titulaire).
+     */
+    public function titulaire()
+    {
+        return $this->belongsToMany(User::class)
+            ->wherePivot('role', 'titulaire')
+            ->withTimestamps();
+    }
+
+    /**
+     * Get substitute users (suppleants).
+     */
+    public function suppleants()
+    {
+        return $this->belongsToMany(User::class)
+            ->wherePivot('role', 'suppleant')
+            ->withTimestamps();
     }
 }

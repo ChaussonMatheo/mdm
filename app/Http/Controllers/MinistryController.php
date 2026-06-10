@@ -24,7 +24,7 @@ class MinistryController extends Controller
             abort(403, 'Vous devez appartenir à une famille pour gérer les ministères.');
         }
 
-        $ministries = $family->ministries()->with('users')->get();
+        $ministries = $family->ministries()->with('users', 'titulaire', 'suppleants')->get();
         $familyMembers = $family->users;
 
         return view('ministries.index', compact('ministries', 'familyMembers'));
@@ -83,7 +83,7 @@ class MinistryController extends Controller
     }
 
     /**
-     * Assign a user to a ministry.
+     * Assign a user as titulaire to a ministry.
      */
     public function assignUser(Request $request, Ministry $ministry): RedirectResponse
     {
@@ -105,9 +105,43 @@ class MinistryController extends Controller
             return back()->withErrors(['user_id' => 'Cet utilisateur a déjà ce ministère.']);
         }
 
-        $ministry->users()->attach($user);
+        // If no titulaire yet, assign as titulaire
+        $hasTitulaire = $ministry->titulaire()->exists();
+        $role = $hasTitulaire ? 'suppleant' : 'titulaire';
 
-        return redirect()->route('ministries.index')->with('status', 'Ministère attribué avec succès.');
+        $ministry->users()->attach($user, ['role' => $role]);
+
+        $message = $role === 'titulaire'
+            ? 'Ministère attribué avec succès.'
+            : 'Suppléant ajouté avec succès.';
+
+        return redirect()->route('ministries.index')->with('status', $message);
+    }
+
+    /**
+     * Assign a substitute (suppleant) to a ministry.
+     */
+    public function assignSuppleant(Request $request, Ministry $ministry): RedirectResponse
+    {
+        $this->authorize('modify', $ministry);
+
+        $validated = $request->validate([
+            'user_id' => ['required', 'exists:users,id'],
+        ]);
+
+        $user = User::findOrFail($validated['user_id']);
+
+        if ($user->family_id !== $ministry->family_id) {
+            return back()->withErrors(['user_id' => 'Cet utilisateur n\'appartient pas à votre famille.']);
+        }
+
+        if ($ministry->users()->where('user_id', $user->id)->exists()) {
+            return back()->withErrors(['user_id' => 'Cet utilisateur a déjà ce ministère.']);
+        }
+
+        $ministry->users()->attach($user, ['role' => 'suppleant']);
+
+        return redirect()->route('ministries.index')->with('status', 'Suppléant ajouté avec succès.');
     }
 
     /**
@@ -117,7 +151,17 @@ class MinistryController extends Controller
     {
         $this->authorize('modify', $ministry);
 
+        $role = $ministry->users()->where('user_id', $user->id)->first()?->pivot?->role;
+
         $ministry->users()->detach($user);
+
+        // If we removed the titulaire, promote the first suppleant to titulaire
+        if ($role === 'titulaire') {
+            $firstSuppleant = $ministry->suppleants()->first();
+            if ($firstSuppleant) {
+                $ministry->users()->updateExistingPivot($firstSuppleant->id, ['role' => 'titulaire']);
+            }
+        }
 
         return redirect()->route('ministries.index')->with('status', 'Ministère retiré avec succès.');
     }

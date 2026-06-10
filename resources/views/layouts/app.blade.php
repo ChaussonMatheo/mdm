@@ -39,19 +39,19 @@
         <div class="min-h-screen bg-white dark:bg-gray-950">
             @empty($header)
             <!-- Header -->
-            <header class="bg-white dark:bg-gray-900 pt-14 mx-4">
-                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div class="flex items-center justify-between h-16">
+            <header class="bg-white dark:bg-gray-900 pt-4 mx-2 sm:mx-4">
+                <div class="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6">
+                    <div class="flex items-center justify-between h-14">
                         <!-- Header Left (Logo or Custom Content) -->
                         <div class="flex-shrink-0">
                             {{ $headerLeft ?? '' }}
                             @empty($headerLeft)
-                                <img src="{{ asset('logo/LOGO-10.png') }}" alt="{{ config('app.name') }}" class="h-20 w-auto">
+                                <img src="{{ asset('logo/LOGO-10.png') }}" alt="{{ config('app.name') }}" class="h-16 w-auto">
                             @endempty
                         </div>
                         <!-- Settings Icon -->
                         <a href="{{ route('settings.index') }}" class="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
-                            <i data-lucide="settings" class="w-8 h-8"></i>
+                            <i data-lucide="settings" class="w-7 h-7"></i>
                         </a>
                     </div>
                 </div>
@@ -59,7 +59,7 @@
             @endempty
 
             <!-- Page Content -->
-            <main class="max-w-7xl mx-auto px-8 sm:px-6 lg:px-8">
+            <main class="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6">
                 {{ $slot }}
             </main>
         </div>
