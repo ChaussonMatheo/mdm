@@ -1,3 +1,12 @@
+@php
+function prefixSvgClasses(string $svg, string $prefix): string {
+    $svg = preg_replace('/\.(cls-\d+)/', '.' . $prefix . '-$1', $svg);
+    $svg = preg_replace_callback('/\bclass="([^"]+)"/', function($m) use ($prefix) {
+        return 'class="' . preg_replace('/\bcls-(\d+)\b/', $prefix . '-cls-$1', $m[1]) . '"';
+    }, $svg);
+    return $svg;
+}
+@endphp
 <x-app-layout>
     <x-slot name="headerLeft">
         <a href="{{ route('dashboard') }}" class="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
@@ -33,7 +42,7 @@
                         <h3 class="text-lg font-bold text-gray-900 mb-3">Forme du visage</h3>
                         <div class="grid grid-cols-4 sm:grid-cols-6 gap-2">
                             @foreach($faces as $key => $svgContent)
-                                @php $num = str_replace('Perso-', '', $key); @endphp
+                                @php $num = str_replace('Perso-', '', $key); $pfx = 'f' . $num; @endphp
                                 <label for="face-{{ $key }}" class="cursor-pointer" data-svg-category="face" data-svg-key="{{ $key }}">
                                     <input type="radio" name="avatar_style[face]" value="{{ $key }}" id="face-{{ $key }}"
                                         {{ ($avatarStyle['face'] ?? 'Perso-18') === $key ? 'checked' : '' }}
@@ -42,7 +51,7 @@
                                     >
                                     <div class="p-1 rounded-xl border-2 border-transparent peer-checked:border-pink-500 peer-checked:bg-pink-50 transition-all hover:bg-gray-50">
                                         <div style="--skin: {{ $avatarColors['skin'] ?? '#f5a57f' }}; --secondary: {{ $avatarColors['secondary'] ?? '#faea2f' }}; --accent: {{ $avatarColors['accent'] ?? '#f2969f' }}; --hair: {{ $avatarColors['hair'] ?? '#2d2d2d' }};">
-                                            {!! str_replace('<svg', '<svg style="width:100%;height:auto;max-width:50px"', $svgContent) !!}
+                                            {!! str_replace('<svg', '<svg style="width:100%;height:auto;max-width:50px"', prefixSvgClasses($svgContent, $pfx)) !!}
                                         </div>
                                         <p class="text-xs text-center font-medium text-gray-700">Visage {{ $num }}</p>
                                     </div>
@@ -56,7 +65,7 @@
                         <h3 class="text-lg font-bold text-gray-900 mb-3">Yeux, nez, bouche</h3>
                         <div class="grid grid-cols-4 sm:grid-cols-6 gap-2">
                             @foreach($features as $key => $svgContent)
-                                @php $num = str_replace('Perso-', '', $key); @endphp
+                                @php $num = str_replace('Perso-', '', $key); $pfx = 't' . $num; @endphp
                                 <label for="feat-{{ $key }}" class="cursor-pointer" data-svg-category="features" data-svg-key="{{ $key }}">
                                     <input type="radio" name="avatar_style[features]" value="{{ $key }}" id="feat-{{ $key }}"
                                         {{ ($avatarStyle['features'] ?? 'Perso-23') === $key ? 'checked' : '' }}
@@ -65,7 +74,7 @@
                                     >
                                     <div class="p-1 rounded-xl border-2 border-transparent peer-checked:border-pink-500 peer-checked:bg-pink-50 transition-all hover:bg-gray-50">
                                         <div style="--skin: {{ $avatarColors['skin'] ?? '#f5a57f' }}; --secondary: {{ $avatarColors['secondary'] ?? '#faea2f' }}; --accent: {{ $avatarColors['accent'] ?? '#f2969f' }}; --hair: {{ $avatarColors['hair'] ?? '#2d2d2d' }};">
-                                            {!! str_replace('<svg', '<svg style="width:100%;height:auto;max-width:50px"', $svgContent) !!}
+                                            {!! str_replace('<svg', '<svg style="width:100%;height:auto;max-width:50px"', prefixSvgClasses($svgContent, $pfx)) !!}
                                         </div>
                                         <p class="text-xs text-center font-medium text-gray-700">Traits {{ $num }}</p>
                                     </div>
@@ -79,7 +88,7 @@
                         <h3 class="text-lg font-bold text-gray-900 mb-3">Coiffure</h3>
                         <div class="grid grid-cols-4 sm:grid-cols-6 gap-2">
                             @foreach($hairstyles as $key => $svgContent)
-                                @php $num = str_replace('Perso-', '', $key); @endphp
+                                @php $num = str_replace('Perso-', '', $key); $pfx = 'h' . $num; @endphp
                                 <label for="hair-style-{{ $key }}" class="cursor-pointer" data-svg-category="hair" data-svg-key="{{ $key }}">
                                     <input type="radio" name="avatar_style[hair]" value="{{ $key }}" id="hair-style-{{ $key }}"
                                         {{ ($avatarStyle['hair'] ?? 'Perso-28') === $key ? 'checked' : '' }}
@@ -88,7 +97,7 @@
                                     >
                                     <div class="p-1 rounded-xl border-2 border-transparent peer-checked:border-pink-500 peer-checked:bg-pink-50 transition-all hover:bg-gray-50">
                                         <div style="--skin: {{ $avatarColors['skin'] ?? '#f5a57f' }}; --secondary: {{ $avatarColors['secondary'] ?? '#faea2f' }}; --accent: {{ $avatarColors['accent'] ?? '#f2969f' }}; --hair: {{ $avatarColors['hair'] ?? '#2d2d2d' }};">
-                                            {!! str_replace('<svg', '<svg style="width:100%;height:auto;max-width:50px"', $svgContent) !!}
+                                            {!! str_replace('<svg', '<svg style="width:100%;height:auto;max-width:50px"', prefixSvgClasses($svgContent, $pfx)) !!}
                                         </div>
                                         <p class="text-xs text-center font-medium text-gray-700">Cheveux {{ $num }}</p>
                                     </div>
@@ -150,28 +159,7 @@
                             </div>
                         </div>
 
-                        <!-- Couleur d'arrière plan -->
-                        <div>
-                            <label class="block text-sm font-bold text-gray-900 mb-3">Couleur secondaire</label>
-                            <div class="flex gap-3 flex-wrap">
-                                @foreach(['#faea2f', '#ffd700', '#ffb700', '#ff9500', '#ff7f00'] as $color)
-                                    <input
-                                        type="radio"
-                                        name="avatar_colors[secondary]"
-                                        value="{{ $color }}"
-                                        id="secondary-{{ $loop->index }}"
-                                        {{ ($avatarColors['secondary'] ?? '#faea2f') === $color ? 'checked' : '' }}
-                                        class="sr-only peer"
-                                        onchange="submitColorForm()"
-                                    >
-                                    <label
-                                        for="secondary-{{ $loop->index }}"
-                                        class="w-8 h-8 rounded-full cursor-pointer border border-transparent peer-checked:border-black transition-all"
-                                        style="background-color: {{ $color }}"
-                                    ></label>
-                                @endforeach
-                            </div>
-                        </div>
+                        <input type="hidden" name="avatar_colors[secondary]" value="{{ $avatarColors['secondary'] ?? '#faea2f' }}">
 
                         <!-- Couleur d'accent -->
                         <div>
@@ -276,13 +264,11 @@
         function submitColorForm() {
             const skinColor = document.querySelector('input[name="avatar_colors[skin]"]:checked')?.value || '#f5a57f';
             const hairColor = document.querySelector('input[name="avatar_colors[hair]"]:checked')?.value || '#2d2d2d';
-            const secondaryColor = document.querySelector('input[name="avatar_colors[secondary]"]:checked')?.value || '#faea2f';
             const accentColor = document.querySelector('input[name="avatar_colors[accent]"]:checked')?.value || '#f2969f';
 
             document.querySelectorAll('[style*="--skin"]').forEach(el => {
                 el.style.setProperty('--skin', skinColor);
                 el.style.setProperty('--hair', hairColor);
-                el.style.setProperty('--secondary', secondaryColor);
                 el.style.setProperty('--accent', accentColor);
             });
         }

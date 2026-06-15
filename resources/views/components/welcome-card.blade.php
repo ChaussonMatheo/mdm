@@ -18,7 +18,7 @@
     </div>
 
     <!-- Greeting -->
-    <h2 class="text-2xl sm:text-3xl font-black text-gray-900 mb-4">
+    <h2 class="text-2xl sm:text-3xl font-black mt-6 text-gray-900 mb-4">
         Bonjour, <span class="text-[#E6066B]">{{ $user->name }}</span> !
     </h2>
 

@@ -32,11 +32,13 @@
 }
 
 /* ── Login page (mobile-first) ── */
+/* Helvetica.ttc est un .ttc non supporté de façon fiable par les navigateurs :
+   on garde mdmFont en priorité, avec un repli Helvetica/Arial visuellement équivalent. */
 * {
-    font-family: "mdmFont";
+    font-family: "mdmFont", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 .roundedfont {
-    font-family: "mdmFontRounded";
+    font-family: "mdmFontRounded", "Arial Black", "Helvetica Neue", Arial, sans-serif;
 }
 .login-wrap {
     /* Mobile: stacked layout */

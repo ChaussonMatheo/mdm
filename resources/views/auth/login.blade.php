@@ -36,6 +36,9 @@
                         <a class="forgot" href="{{ route('password.request') }}">
                             {{ __('Mot de passe oublié ?') }}
                         </a>
+                        <a class="register" href="{{ route('register') }}">
+                            {{ __('Créer un compte') }}
+                        </a>
                     @endif
                     <x-primary-button>{{ __('Se connecter') }}</x-primary-button>
                 </div>
