@@ -19,11 +19,10 @@
     {{-- ───────────────────────── HEADER / NAV ───────────────────────── --}}
     <header class="relative border-b border-[#1B1B18]/10">
         <div class="mx-auto flex max-w-[1240px] items-stretch justify-between px-5 sm:px-8">
-            {{-- Marque (tab noir) --}}
-            <a href="#top" class="flex shrink-0 items-center bg-[#1B1B18] px-5 pt-3 pb-4 -mt-px rounded-b-xl">
-                <img src="{{ asset('logo/LOGO-10.png') }}" alt="Ministère de Mamie" class="h-6 w-auto">
+            {{-- Logo --}}
+            <a href="#top" class="flex items-center gap-3 py-4">
+                <img src="{{ asset('logo/LOGO-10.png') }}" alt="Ministère de Mamie" class="h-10 w-auto">
             </a>
-
             {{-- Navigation --}}
             <nav class="flex items-center gap-6 text-[12px] font-medium uppercase tracking-[0.14em]">
                 <a href="#top" class="hidden text-[#1B1B18] transition-colors hover:text-[#E6066B] sm:inline">Accueil</a>

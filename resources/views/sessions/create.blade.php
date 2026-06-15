@@ -4,7 +4,7 @@
         <x-slot name="header">
             <p>pas de header</p>
         </x-slot>
-        <div class="mt-12 mb-16 flex justify-center">
+        <div class="mt-4 mb-16 flex justify-center">
             <img src="{{ asset('logo/LOGO_MM.svg') }}" alt="MM Logo" class="w-[78px] h-auto">
         </div>
 
@@ -41,10 +41,10 @@
                 <div class="flex flex-col">
                     @php
                         $recentThemes = [
-                            'Tarte à la pomme ou fraise ?',
-                            'Tarte à la pomme ou fraise ?',
-                            'Tarte à la pomme ou fraise ?',
-                            'Tarte à la pomme ou fraise ?',
+                            'Est-ce que on laisse la voiture à Papy ?',
+                            'Est-ce que nous laissons Mamie à la maison ou est-ce que nous l\'emmenons à l\'EHPAD ?',
+                            'Est-ce que nous vendons la maison de Mamie ?',
+                            'Nous utilisons les fonds de Papy pour payer l\'EHPAD ?',
                             'Tarte à la pomme ou fraise ?',
                         ];
                     @endphp

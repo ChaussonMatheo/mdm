@@ -34,11 +34,11 @@
         @if($faceSvg)
             {!! $extractBody($faceSvg, 'f') !!}
         @endif
-        @if($hairSvg)
-            {!! $extractBody($hairSvg, 'h') !!}
-        @endif
         @if($featuresSvg)
             {!! $extractBody($featuresSvg, 't') !!}
+        @endif
+        @if($hairSvg)
+            {!! $extractBody($hairSvg, 'h') !!}
         @endif
     </svg>
 </div>

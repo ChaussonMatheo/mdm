@@ -48,7 +48,7 @@ class SessionController extends Controller
     {
         $validated = $request->validate([
             'theme' => 'required|string|max:255',
-            'modules' => 'required|array|min:4',
+            'modules' => 'required|array|min:1',
             'modules.*' => 'exists:modules,id',
         ]);
 
@@ -122,7 +122,7 @@ class SessionController extends Controller
                 ->groupBy('choice')
                 ->pluck('count', 'choice')
                 ->toArray();
-                
+
             $participantAnswers = GameSessionAnswer::where('game_session_id', $session->id)
                 ->where('module_id', $session->current_module_id)
                 ->pluck('choice', 'user_id')
@@ -172,7 +172,7 @@ class SessionController extends Controller
             \Log::error('Broadcast failed: ' . $e->getMessage());
             // l'app continue sans planter
         }
-        
+
         return back();
     }
 

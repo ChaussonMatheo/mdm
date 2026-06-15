@@ -16,8 +16,12 @@
         stroke-width: 3px;
       }
 
-      .cls-2, .cls-3 {
+      .cls-2 {
         fill: var(--secondary);
+      }
+
+      .cls-3 {
+        fill: var(--hair);
       }
 
       .cls-4 {
