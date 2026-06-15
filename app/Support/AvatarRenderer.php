@@ -20,7 +20,8 @@ class AvatarRenderer
 
         $style = $user->avatar_style;
         if (!is_array($style)) {
-            $style = [
+            $decoded = is_string($style) ? json_decode($style, true) : null;
+            $style = is_array($decoded) ? $decoded : [
                 'face' => 'Perso-18',
                 'features' => 'Perso-23',
                 'hair' => 'Perso-28',

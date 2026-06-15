@@ -46,7 +46,7 @@ class AvatarController extends Controller
 
         // Sauvegarder silencieusement
         $user->update([
-            'avatar_style' => json_encode($style),
+            'avatar_style' => $style,
         ]);
 
         return view('components.avatar-frame', [
@@ -77,7 +77,7 @@ class AvatarController extends Controller
         ];
 
         if (isset($validated['avatar_style'])) {
-            $data['avatar_style'] = json_encode($validated['avatar_style']);
+            $data['avatar_style'] = $validated['avatar_style'];
         }
 
         auth()->user()->update($data);
